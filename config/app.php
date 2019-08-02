@@ -2,6 +2,30 @@
 
 return [
 
+	'menuuser' => [
+		array("Logout"),
+		array("Change Password"),
+		array("Personal Details"),
+	],
+		
+	'menuadmin' => [
+		array("Clients", array(
+			"Clients", "Email", "New clients", "New clients import"
+		), "#ccffff"),
+		array("Questionnaires", array(
+			"New questions", "New questions import", "Questionnaires", 
+			"Question categories", "Questions", "Question Options"
+		), "#ffffcc"),
+		array("Upload", array(
+			"Clients", "Questions"
+		), "#ffddff"),
+		array("Admin", array(
+			"Email forms", "Programmes", "System", "uploads", "Users"
+		), "#cce5ff"),
+	],
+	
+		
+		
     /*
     |--------------------------------------------------------------------------
     | Application Name
