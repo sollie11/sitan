@@ -14,15 +14,17 @@ public function password(){
 }
 
 //==========================
-public function passwordsave(Request $request)
-{
+public function passwordsave(Request $request){
+	echo $request->password_confirmation;
+	echo '<br>';
+//	echo json_encode($request->request);die;
 	$this->validate($request, [
-			'old' => 'required',
+			'oldpassword' => 'required',
 			'password' => 'required|min:6|confirmed',
 	]);
 	$oUser = \Auth::user();
 	$sHashedPassword = $oUser->password;
-	if (Hash::check($request->old, $sHashedPassword)) {
+	if (Hash::check($request->oldpassword, $sHashedPassword)) {
 		//Change the password
 		$sSQL = 'UPDATE users SET password = ?, updated_at = ?, ' .
 			'is_first_login = 0 ' .
@@ -38,5 +40,8 @@ public function passwordsave(Request $request)
 }
 
 
-
+//==========================
+public function personaldetails(){
+	return view('user.personaldetails');
+}
 }

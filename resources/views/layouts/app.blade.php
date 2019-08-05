@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="csrf-token" content="{{ csrf_token() }}">
-		<title>{{ getenv('APP_NAME') }}</title>
-		<script src="{{ asset('js/app.js') }}" defer></script>
-		<script src="{{ asset('js/app2.js') }}" defer></script>
-		<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<title>{{ getenv('APP_NAME') }}</title>
+	<script src="{{ asset('js/app2.js') }}" defer></script>
+	<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 	<div id="app">
@@ -17,18 +16,17 @@
 					<div class="header-brand"><img src="/{{ env('APP_LOGOSMALL') }}" /></div>
 					<div class="header-brand">{!! implode('<br>', explode(' ', env('APP_NAME'))) !!}</div>
 				</a>
-					<!-- Authentication Links -->
-@guest
-@if (Route::has('register'))
+				@guest
+				@if (Route::has('register'))
 				<ul class="navbar">
 					<li class="navbar">
 						<a class="toprightlinks" href="{{ route('register') }}">{{ __('Register') }}</a>
 					</li>
-@endif
+				@endif
 					<li class="navbar">
 						<a class="toprightlinks" href="{{ route('login') }}">{{ __('Login') }}</a>
 					</li>
-@else
+				@else
 <!-- Logged in -->
 <div class="navuser">
 	<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>

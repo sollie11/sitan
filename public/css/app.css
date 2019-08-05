@@ -2,6 +2,27 @@ html{
 	background: #ffffff;
 	color: #444444;
 	font-family: Sans;
+	font-size: 15px;
+}
+main{
+	margin-top: 4.4em;
+}
+.alert{
+	float: left;
+	width:100%;
+	font-size: 0.8em;
+	padding-top: 0.3em;
+	text-align: left;
+	cursor: pointer;
+}
+.alert-danger{
+	color: #ff0000;
+}
+.alert-session{
+	color: #444444;
+}
+.alert-success{
+	color: #008800;
 }
 .btn-primary{
 	font-size: 1em;
@@ -13,9 +34,10 @@ html{
 	border-radius: 4px;
 }
 .btn-primary:hover{
-	background: #ffffff !important;
-	color: #000000 !important;
-	border: 1px solid #cccccc !important;
+	background: #ffffff;
+	color: #000000;
+	border: 1px solid #cccccc;
+	border-bottom: 2px solid #cccccc;
 }
 .btn-primary:active{
 	margin-top: 1px;
@@ -32,33 +54,54 @@ html{
 	min-width: 470px;
 	max-width: 700px;
 }
+.card100{
+	border: 1px solid #cccccc;
+	border-radius: 0.2em;
+	float: left;
+	width: 100%;
+}
 .card-body{
 	text-align: left;
-	padding: 1.2em 0 0 1.2em;
+	padding: 1.4em;
+}
+.card-body.grid{
+	text-align: left;
+	padding: 0.1em 0.4em 1.4em 0.4em;
 }
 .card-header{
 	background: #e4fcef;
 	border-radius: 0.2em 0.2em 0 0;
 	border-bottom: 1px solid #cccccc;
-	height: 1.6em;
+	height: 3em;
 	padding: 0.3em 0 0 1em;
-	font-size: 1.2em;
-	font-weight: 700;
+}
+.card-header-title{
+	font-size: 1.4em;
 	text-align: left;
+	float: left;
 }
 .col50{
 	text-align: center;
 	margin: 0 auto;
 	width: 50%;
 }
+.col100{
+	text-align: center;
+	margin: 0 auto;
+	width: 100%;
+}
+a.colornodecor{
+	color: #04a34d;
+	text-decoration: none;
+	font-size: 0.9em;
+}
 .form-group{
 	min-height: 3em;
 }
-.form-label{
-	float: left;
-	min-width: 25%;
-	font-size: 0.9em;
-	margin-top: 0.8em;
+.form-info{
+	border: 1px solid #cccccc;
+	padding: 1em;
+	margin: 1em 0 2em 0;
 }
 .form-input{
 	float: left;
@@ -72,7 +115,31 @@ html{
 .form-inputcheck{
 	float: left;
 	width: 1.6em;
-	height: 1.6em;
+	height: 2.6em;
+}
+.form-label{
+	float: left;
+	min-width: 25%;
+	font-size: 0.9em;
+	margin-top: 0.8em;
+}
+button.grid{
+	padding: 0.2em 1em 0.2em 1em;
+}
+.gridcontrols{
+	float: left;
+	width: 75%;
+	max-width: 600px;
+}
+.gridcontrolstable{
+	cursor: pointer; 
+	float: right; 
+	width: 50%;
+}
+.gridtable{
+	border: none;
+	width: 100%;
+	font-size: 0.9em;
 }
 .header-brand{
 	float: left;
@@ -101,22 +168,28 @@ ul.navbar{
 	width: 40%;
 }
 nav.navbar{
+	position: fixed;
+	top: 0;
+	padding-top: 0.3em;
 	float: left;
 	width: 100%;
-	height: 4em;
+	height: 3.7em;
 	font-size: 1em;
 	border-bottom: 1px solid #eeeeee;
+	background: #ffffff;
 }
 .navbar-brand{
 	float: left;
 	margin: 0 2em 0 2em;
 }
 .navuser{
+	padding-top: 0.3em;
 	font-size: 0.9em;
 	float: right;
 	width: 14em;
 }
 .navmain{
+	padding-top: 0.3em;
 	font-size: 0.9em;
 	float: left;
 	min-width: 11em;
@@ -125,12 +198,6 @@ nav.navbar{
 	width: 100%; 
 	height:2em;
 	float: left;
-}
-a.colornodecor{
-	margin-left:2em;
-	color: #04a34d;
-	text-decoration: none;
-	font-size: 0.9em;
 }
 .toprightlinks{
 	text-decoration: none;
@@ -179,7 +246,7 @@ a.colornodecor{
 	background: inherit;
 	padding: 1em;
 	margin: 0;
-	font-size: 0.9em;
+	font-size: 1em;
 	font-family: Sans;
 	width: 100%;
 }

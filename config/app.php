@@ -9,21 +9,61 @@ return [
 	],
 		
 	'menuadmin' => [
-		array("Clients", array(
-			"Clients", "Email", "New clients", "New clients import"
-		), "#ccffff"),
-		array("Questionnaires", array(
-			"New questions", "New questions import", "Questionnaires", 
-			"Question categories", "Questions", "Question Options"
-		), "#ffffcc"),
-		array("Upload", array(
-			"Clients", "Questions"
-		), "#ffddff"),
-		array("Admin", array(
-			"Email forms", "Programmes", "System", "uploads", "Users"
-		), "#cce5ff"),
+		array('Clients', array(
+			'Clients', 'Email', 'New clients', 'New clients import', 'Upload'
+		), '#ccffff'),
+		array('Questions', array(
+			'New questions', 'New questions import', 'Questionnaires', 
+			'Question categories', 'Questions', 'Question options', 'Upload',
+		), '#ffffcc'),
+		array('Admin', array(
+			'Email forms', 'Programmes', 'System', 'Uploads', 'Users'
+		), '#cce5ff'),
 	],
 	
+		
+	'upload' => array(
+		'clients' => array(
+			'aFields' => array(
+				array('sDBField' => 'email',
+					'sColName' => 'Email', 'bRequiredFatal' => 1),
+				array('sDBField' => 'questionnaire',
+					'sColName' => 'Questionnaire', ),
+				array('sDBField' => 'programme',
+					'sColName' => 'Programme', ),
+				array('sDBField' => 'business_name',
+					'sColName' => 'ProjName'),
+				array('sDBField' => 'first_name',
+					'sColName' => 'Firstname'),
+				array('sDBField' => 'surname',
+					'sColName' => 'Surname'),
+				),
+				'oOptions' => array(
+					'sDBTable' => 'new_clients',
+					'sLastCol' => 'A',
+					'iFieldsOnRowNo' => 1,
+				),
+		),
+		'questions' => array(
+			'aFields' => array(
+				array('sDBField' => 'category',
+					'sColName' => 'Category'),
+				array('sDBField' => 'question',
+					'sColName' => 'Question', ),
+				array('sDBField' => 'tooltip',
+					'sColName' => 'Tooltip', ),
+				array('sDBField' => 'options',
+					'sColName' => 'Options', 'bRequiredFatal' => 1),
+				array('sDBField' => 'score',
+					'sColName' => 'Score'),
+			),
+			'oOptions' => array(
+				'sDBTable' => 'new_questions',
+				'sLastCol' => 'A',
+				'iFieldsOnRowNo' => 1,
+			),
+		),
+	),
 		
 		
     /*
