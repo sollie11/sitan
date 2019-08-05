@@ -1,44 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<<style>
-.upload-btn-wrapper {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
-    width: 200px;
-}
-.upload-btn {
-    border: 1px solid #888888;
-    color: #000000;
-    background-color: #eeeeee;
-    padding: 4px 20px;
-    border-radius: 3px;
-    font-size: 14px;
-    width: 120px;
-}
-.upload-btn-wrapper input[type=file] {
-    font-size: 50px;
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-}
-progress.upload{
-    height: 25px;
-    width: 100%;
-}
-.uploadfilesize{
-    position: absolute;
-    margin-left: 10px;
-    line-height: 0;
-}
-table.upload {
-    border-spacing: 4px;
-    border-left: 1px solid #d8d8d8;
-    border-collapse: separate;
-
-}
-</style>
 <div class="container">
 	<div class="col50">
 		<div class="card">
@@ -82,12 +43,13 @@ table.upload {
     </div>
 </div>
 <script type="text/javascript">
-window.onload = function(){
+console.log("upload");
+window.setTimeout(function(){
 	JSupload.uploadform("card-body", uploadSuccess, 
 		"Upload the spreadsheet containing the new {{ $oData['sSingle'] }} records.", 
 		"{{ $oData['sAction'] }}", 
 		"csv,xls,xlsx");
-};
+}, 1000);
 function uploadSuccess(sResponse){
 	var sRoute;
 	sRoute = "/{{ $oData['sAction'] }}/upload/new/" + sResponse;

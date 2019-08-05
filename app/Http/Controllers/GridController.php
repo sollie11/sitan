@@ -18,13 +18,13 @@ class GridController extends Controller
 	//==========================
 	public function clients($bExport = 0){
 		$aColumns = array(
-				//width, desc, db, search
-				array(6, 'ID', 'id', 1),
-				array(14, 'Questionnaire', 'questionnaire', 1),
-				array(14, 'Programme', 'programme', 1),
-				array(25, 'Business Name', 'business_name', 1),
-				array(20, 'Email Address', 'email', 1),
-				array(20, 'Submitted Form', 'updated_at', 0)
+			//width, desc, db, search
+			array(6, 'ID', 'id', 1),
+			array(14, 'Questionnaire', 'questionnaire', 1),
+			array(14, 'Programme', 'programme', 1),
+			array(25, 'Business Name', 'business_name', 1),
+			array(20, 'Email Address', 'email', 1),
+			array(20, 'Submitted Form', 'updated_at', 0)
 		);
 		$sSQL = '';
 		foreach ($aColumns as $aCol){

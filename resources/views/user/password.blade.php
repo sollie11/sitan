@@ -38,14 +38,14 @@
 
 
 			<div class="card-body">
-<div class="form-group">
-	<div style="float: left">Use this form to change your password.</div>
-	<div class="newline"></div>
-</div>
 				<form method="POST" action="{{ route('user-password-save') }}">
 					@csrf
 
 
+<div class="form-group">
+	<div style="float: left">{{ __('Use this form to change your password.') }}</div>
+	<div class="newline"></div>
+</div>
 					
 <div class="form-group">
 	<label for="oldpassword" class="form-label">{{ __('Old Password') }}</label>
@@ -69,11 +69,11 @@
 </div>
 
 <div class="form-group">
-	<label class="form-label">&nbsp;</label>
-	<div class="form-input">
-		<button type="submit" class="btn-primary">{{ __('Submit') }}</button>
+	<div class="form-inputright">
+		<button type="submit" class="buttonsubmit">{{ __('Change Password') }}</button>
 	</div>
 </div>
+
                 </form>
         	</div>
         </div>

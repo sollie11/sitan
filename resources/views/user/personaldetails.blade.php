@@ -75,9 +75,8 @@
 </div>
 
 <div class="form-group">
-	<label class="form-label">&nbsp;</label>
-	<div class="form-input">
-		<button type="submit" class="btn-primary">{{ __('Save') }}</button>
+	<div class="form-inputright">
+		<button type="submit" class="btn-primary">{{ __('Change personal details') }}</button>
 	</div>
 </div>
                 </form>

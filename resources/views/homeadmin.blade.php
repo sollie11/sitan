@@ -41,6 +41,7 @@
 				<span>You are an administrator on this site. Please respect the rules and goals of our company.</span>
 				<br><span>We have a total of <strong>{{ $oData['iTotalUsers'] }}</strong> users.</span>
 				<br><span>There are <strong>{{ $oData['iTotalAdmins'] }}</strong> administrators and <strong>{{ $oData['iTotalClients'] }}</strong> users in our database.</span>
+				<br><span><strong>{{ $oData['iTotalDeleted'] }}</strong> users should be permanently deleted.</span>
 			</div>
 		</div>
 	</div>

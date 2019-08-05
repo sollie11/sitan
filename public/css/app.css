@@ -24,7 +24,7 @@ main{
 .alert-success{
 	color: #008800;
 }
-.btn-primary{
+button{
 	font-size: 1em;
 	padding: 0.4em 2.0em 0.4em 2.0em;
 	background: linear-gradient(0deg, #e4fcef 20% , #ffffff 91%);
@@ -32,19 +32,19 @@ main{
 	border: 1px solid #cccccc;
 	border-bottom: 2px solid #cccccc;
 	border-radius: 4px;
+	margin-right: 1em;
 }
-.btn-primary:hover{
+button:hover{
 	background: #ffffff;
 	color: #000000;
 	border: 1px solid #cccccc;
 	border-bottom: 2px solid #cccccc;
 }
-.btn-primary:active{
+button:active{
 	margin-top: 1px;
 }
-
-.btn-primary:active{
-	margin-top: 1px;
+.buttonsubmit{
+	margin-left: -1.1em;
 }
 .card{
 	border: 1px solid #cccccc;
@@ -53,6 +53,7 @@ main{
 	width: 100%;
 	min-width: 470px;
 	max-width: 700px;
+	margin-bottom: 4em;
 }
 .card100{
 	border: 1px solid #cccccc;
@@ -99,7 +100,7 @@ a.colornodecor{
 	min-height: 3em;
 }
 .form-info{
-	border: 1px solid #cccccc;
+	border-left: 1px solid #cccccc;
 	padding: 1em;
 	margin: 1em 0 2em 0;
 }
@@ -116,6 +117,10 @@ a.colornodecor{
 	float: left;
 	width: 1.6em;
 	height: 2.6em;
+}
+.form-inputright{
+	padding: 1em 1.7em 2em 0;
+	float: right;
 }
 .form-label{
 	float: left;
@@ -140,6 +145,7 @@ button.grid{
 	border: none;
 	width: 100%;
 	font-size: 0.9em;
+	cursor: pointer;
 }
 .header-brand{
 	float: left;
@@ -277,4 +283,40 @@ nav.navbar{
 }
 .w3show {
 	display: block;
+}
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 200px;
+}
+.upload-btn {
+    border: 1px solid #888888;
+    color: #000000;
+    background-color: #eeeeee;
+    padding: 4px 20px;
+    border-radius: 3px;
+    font-size: 14px;
+    width: 120px;
+}
+.upload-btn-wrapper input[type=file] {
+    font-size: 50px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+progress.upload{
+    height: 25px;
+    width: 100%;
+}
+.uploadfilesize{
+    position: absolute;
+    margin-left: 10px;
+    line-height: 0;
+}
+table.upload {
+    border-spacing: 4px;
+    border-left: 1px solid #d8d8d8;
+    border-collapse: separate;
 }

@@ -17,22 +17,30 @@ public function home(){
 	
 	if ($oUser->is_admin){
 		
-		$aUsers = DB::select('SELECT is_admin, is_client ' .
+		$aUsers = DB::select('SELECT is_admin, is_client, deleted_at ' .
 			'FROM users');
 		$iAd = 0;
 		$iCl = 0;
+		$iDel = 0;
+		$iAc = 0;
 		foreach ($aUsers as $oU){
-			if ($oU->is_admin == 1){
-				$iAd++;
-			}
-			if ($oU->is_client == 1){
-				$iCl++;
+			if ($oU->deleted_at){
+				$iDel++;
+			} else {
+				$iAc++;
+				if ($oU->is_admin == 1){
+					$iAd++;
+				}
+				if ($oU->is_client == 1){
+					$iCl++;
+				}
 			}
 		}
 		$oData = array(
-			'iTotalUsers' => sizeof($aUsers),
+			'iTotalUsers' => $iAc,
 			'iTotalAdmins' => $iAd,
 			'iTotalClients' => $iCl,
+			'iTotalDeleted' => $iDel,
 		);
 		
 		

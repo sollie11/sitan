@@ -5,10 +5,6 @@
 		<div class="card">
 			<div class="card-header">
 				<div class="card-header-title">{{ __('Clients import') }}</div>
-				<div class="gridcontrols">
-					<button class="btn-primary grid" onclick="JSnewclients.importnow()">Import Now</button>
-					<a href="."><button class="btn-primary grid">List</button></a>				
-				</div>
 				<div class="alert"><?php $bMsg = 0; ?>
 @if (session('status'))<?php $bMsg = 1; ?>
 <div class="alert-session">{{ session('status') }}</div> @endif
@@ -40,6 +36,13 @@
 
 
 			<div class="card-body">
+
+<div class="form-group">
+	<div class="gridcontrols">
+		<button onclick="JSnewclients.importnow()">Import Now</button>
+		<a href="."><button>View new clients</button></a>				
+	</div>
+</div>
 <div class="form-group">
 	<div style="float: left">Import the new clients here. After this process, they will be able to log in and fill in their questionnaire. Please choose the email options below.</div>
 	<div class="newline"></div>
@@ -83,7 +86,7 @@
 	</div>
 </div>
 <script>
-console.log(2222)
+console.log("importjs");
 var aEmailForms = {!! json_encode($oData['aEmailForms'], 1) !!};
 var JSnewclients = {
 emailform: function(){

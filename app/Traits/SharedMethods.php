@@ -6,59 +6,83 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Hash;
-use function GuzzleHttp\json_encode;
 
 trait SharedMethods {
 
-	//==========================
-	public function gridpaging($sPage, $aData, $aColumns, $oSort)
-	{
-		if (isset($_GET['page'])) {
-			$iPageNo = intval($_GET['page']);
-		} else {
-			$iPageNo = 1;
+//==========================
+public function gridpaging($sPage, $aData, $aColumns, $oSort){
+	if (isset($_GET['grid'])) {
+		error_log(111111);
+		$aGet = $this->getGET($_GET['grid']);
+		error_log(json_encode($aGet));
+		if (isset($aGet['page'])){
+			$iPageNo = intval($aGet['page']);
 		}
-		$iNumRecords = sizeof($aData);
-		$iResultsPerPage = env('APP_GRID_RESULTS_PER_PAGE', 20);
-		$iPages = $iNumRecords / $iResultsPerPage;
-		if ($iPages != intval($iPages)) {
-			$iPages = intval($iPages + 1);
-		}
-		$oData = array(
-				'aData' => $aData,
-				'oPaging' => array(
-						'iPageNo' => $iPageNo,
-						'iPages' => $iPages,
-						'iResultsPerPage' => $iResultsPerPage,
-						'iNumRecords' => $iNumRecords,
-				),
-				'aColumns' => $aColumns,
-				'oSort' => $oSort,
-		);
-		return $oData;
 	}
-	
+	if ((!isset($iPageNo)) || (!$iPageNo)){
+		$iPageNo = 1;
+	}
+	$iNumRecords = sizeof($aData);
+	$iResultsPerPage = env('APP_GRID_RESULTS_PER_PAGE', 20);
+	$iPages = $iNumRecords / $iResultsPerPage;
+	if ($iPages != intval($iPages)) {
+		$iPages = intval($iPages + 1);
+	}
+	$oData = array(
+			'aData' => $aData,
+			'oPaging' => array(
+					'iPageNo' => $iPageNo,
+					'iPages' => $iPages,
+					'iResultsPerPage' => $iResultsPerPage,
+					'iNumRecords' => $iNumRecords,
+			),
+			'aColumns' => $aColumns,
+			'oSort' => $oSort,
+	);
+	return $oData;
+}
+
+private function getGET($sGet){
+	$aGet1 = base64_decode($sGet);
+	if (!isset($aGet1)){
+		return array();
+	}
+	$aGet1 = explode('&', $aGet1); 
+	$aGet = array();
+	foreach ($aGet1 as $aRec){
+		$aRec = explode('=', $aRec);
+		$aGet[$aRec[0]] = $aRec[1];
+	}
+	return $aGet;
+}
+
 	//==========================
 	public function gridsetup($aColumns){
 		$aDir = array(0, 'ASC', 'DESC');
 		$iColumn = 1;
 		$iDir = 1;
-		if (isset($_GET['sort'])) {
-			$iColumn = intval($_GET['sort']);
-			$iDir = intval($_GET['dir']);
-			if ($iDir == 2) {
-				$iDir = 1;
-			} else {
-				$iDir = 2;
+		if (isset($_GET['grid'])) {
+			$aGet = $this->getGET($_GET['grid']);
+			error_log(json_encode($aGet));
+			if (isset($aGet['sort'])) {
+				$iColumn = intval($aGet['sort']);
+				$iDir = intval($aGet['dir']);
+				if ($iDir == 2) {
+					$iDir = 1;
+				} else {
+					$iDir = 2;
+				}
 			}
-		}
-		if (isset($_GET['sort'])) {
-			$iColumn = intval($_GET['sort']);
-			$iDir = intval($_GET['dir']);
-			if ($iDir == 2) {
-				$iDir = 1;
-			} else {
-				$iDir = 2;
+		
+		
+			if (isset($aGet['sort'])) {
+				$iColumn = intval($aGet['sort']);
+				$iDir = intval($aGet['dir']);
+				if ($iDir == 2) {
+					$iDir = 1;
+				} else {
+					$iDir = 2;
+				}
 			}
 		}
 		return array(
@@ -79,22 +103,25 @@ trait SharedMethods {
 			array_multisort(array_column($aNC, $sSort),
 					SORT_ASC, SORT_NATURAL | SORT_FLAG_CASE, $aNC);
 		}
-		if (isset($_GET['search'])) {
-			$sSearch = $_GET['search'];
-			$aNCF = array();
-			foreach ($aNC as $oRec) {
-				$bFound = 0;
-				foreach ($aColumns as $aCol){
-					$sField= $aCol[2];
-					if (($aCol[3])
-							&& (stripos($oRec->$sField, $sSearch) !== false)){
-								$bFound = 1;
+		if (isset($_GET['grid'])) {
+			$aGet = $this->getGET($_GET['grid']);
+			if (isset($aGet['search'])){
+				$sSearch = $aGet['search'];
+				$aNCF = array();
+				foreach ($aNC as $oRec) {
+					$bFound = 0;
+					foreach ($aColumns as $aCol){
+						$sField= $aCol[2];
+						if (($aCol[3])
+								&& (stripos($oRec->$sField, $sSearch) !== false)){
+									$bFound = 1;
+						}
 					}
+					if ($bFound) {
+						$aNCF[] = $oRec;
+					}
+					$aNC = $aNCF;
 				}
-				if ($bFound) {
-					$aNCF[] = $oRec;
-				}
-				$aNC = $aNCF;
 			}
 		}
 		return $aNC;

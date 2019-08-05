@@ -100,8 +100,16 @@ $iI = 1;?>
 		<div class="w3ddown">
 			<button @if (isset($aMenu[3])) style="background: {{ $aMenu[2] }};" @endif class="w3dbtn" onclick="menu('nav_{{ $iI }}')">{{ $aMenu[0] }}&nbsp;&nbsp;<i class="w3caret"></i></button>
 		<div class="w3ddown-content" id="nav_{{ $iI }}">
-@foreach ($aMenu[1] as $aMenu1)
-			<a onclick="clickmenu('{{ str_replace(' ', '', strtolower($aMenu[0])) }}', '{{ str_replace(' ', '', strtolower($aMenu1)) }}')">{{ $aMenu1 }}</a>
+@foreach ($aMenu[1] as $aMenu1)<?php 
+$aDest = array($aMenu1);
+$aDest[1] = str_replace(' ', '', strtolower($aMenu1));
+$aDest[2] = explode('||', $aDest[1]);
+if (!isset($aDest[2][1])){
+	$aDest[2][1] = $aDest[2][0];
+}
+$aDest[3] = explode('||', $aDest[0])[0];
+?>
+			<a onclick="clickmenu('{{ str_replace(' ', '', strtolower($aMenu[0])) }}', '{{ $aDest[2][1] }}')">{{ $aDest[3] }}</a>
 @endforeach
 		</div>
 	</div>

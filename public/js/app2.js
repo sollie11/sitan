@@ -29,38 +29,36 @@ init: function(){
 	var aEles, iI, aGet, aParam, aID, that;
 	aEles = JSgrid.gcn("gridtable");
 	if (aEles[0]){
-		aEles = JSgrid.gcn("gridheading");
-		iI = 0;
-		aEles.forEach(function(oRec){
-			oRec.onclick = JSgrid.sort(iI);
-			iI++;
-		});
-	}
-	aEles = JSgrid.gcn("trgrid");
-	that = this;
-	aEles.forEach(function(oRec){
-		aID = oRec.id.split("_")
-		oRec.onclick = that.clickrow;
-	});
-
-	aGet = window.location.href.split("?")
-	if (aGet[1]){
-		aGet = aGet[1].split("&");
-		aGet.forEach(function(oRec){
-			aParam = oRec.split("=");
-			JSgrid.oGet[aParam[0]] = aParam[1];
-		});
+		aEles[0].onclick = JSgrid.clickrow;
+		aGet = window.location.href.split("grid=");
+		if (aGet[1]){
+			aGet = atob(aGet[1]);
+			aGet = aGet.split("&");
+			aGet.forEach(function(oRec){
+				aParam = oRec.split("=");
+				JSgrid.oGet[aParam[0]] = aParam[1];
+			});
+		}
 	}
 },
-
 
 //======================
 clickrow: function(oEvent){
 	var eEle, eEle1, eCheck, aID, sDate, oParm;
 	eEle = oEvent.target;
 	eEle1 = eEle;
-	while (eEle.className != "trgrid"){
+	while ((eEle) && (eEle.className != "trgrid")){
 		eEle = eEle.parentNode;
+	}
+	if (!eEle){
+		eEle = oEvent.target;
+		while ((eEle) && (eEle.className != "gridheading")){
+			eEle = eEle.parentNode;
+		}
+		if (!eEle){
+			return;
+		}
+		JSgrid.sort(parseInt(eEle.id.split("_")[1]));
 	}
 	aID = eEle.id.split("_");
 	iID = parseInt(aID[1]);
@@ -101,10 +99,10 @@ clickrow: function(oEvent){
 		window.location.href = "emailforms/" + iID;
 	break;
 	case "client":
-		sDate = eEle.childNodes[5].textContent;
-		if (sDate){
-			window.location.href = "answers/" + iID;
-		}		
+/*		sDate = eEle.childNodes[5].textContent;
+		if (sDate){ */
+			window.location.href = "clients/" + iID;
+	//	}		
 	break;
 	}
 },
@@ -177,7 +175,7 @@ searchclear: function(){
 
 //==========================
 sort: function(iColumn){
-	return function(){
+//	return function(){
 		if (JSgrid.oGet.sort == iColumn + 1){
 			if (JSgrid.oGet.dir == 2){
 				JSgrid.oGet.dir = 1;
@@ -190,7 +188,7 @@ sort: function(iColumn){
 		}
 		
 		JSgrid.url();
-	}
+//	}
 },
 
 //==========================
@@ -212,7 +210,7 @@ url: function(){
 	if (sURL){
 		sURL = sURL.substr(0, sURL.length - 1);	
 	}
-	window.location.href = "?" + sURL;
+	window.location.href = "?grid=" + btoa(sURL);
 },
 
 };
@@ -388,3 +386,4 @@ ele: function(eParent, sClass, sType, sID){
 
 
 
+window.onload = JSgrid.init;

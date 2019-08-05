@@ -10,11 +10,13 @@ return [
 		
 	'menuadmin' => [
 		array('Clients', array(
-			'Clients', 'Email', 'New clients', 'New clients import', 'Upload'
+			'Clients', 'Email', 'New clients||new', 
+			'New clients import||new/import', 'Upload'
 		), '#ccffff'),
 		array('Questions', array(
-			'New questions', 'New questions import', 'Questionnaires', 
-			'Question categories', 'Questions', 'Question options', 'Upload',
+			'New questions||new', 'New questions import||new/import', 'Questionnaires', 
+			'Question categories||categories', 'Questions', 
+			'Question options||options', 'Upload',
 		), '#ffffcc'),
 		array('Admin', array(
 			'Email forms', 'Programmes', 'System', 'Uploads', 'Users'

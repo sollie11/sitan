@@ -44,4 +44,25 @@ public function passwordsave(Request $request){
 public function personaldetails(){
 	return view('user.personaldetails');
 }
+
+//==========================
+public function personaldetailssave(Request $request){
+	$this->validate($request, [
+		'first_name' => 'required',
+		'surname' => 'required',
+		'business_name' => 'required',
+	]);
+	$iUserID = \Auth::user()->id;
+	$sSQL = 'UPDATE users SET name = ?, surname = ?, business_name = ?, ' .
+		'updated_at = ? ' .
+		'WHERE id = ?';
+	$aP = array($request->first_name, $request->surname,
+		$request->business_name,
+		date('Y-m-d H:i:s', strtotime('now')), $iUserID);
+	DB::update($sSQL, $aP);
+	$request->session()->flash('success', 'Your personal details have been updated.');
+	return back();
+}
+
+
 }

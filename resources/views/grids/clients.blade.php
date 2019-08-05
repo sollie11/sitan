@@ -39,7 +39,7 @@ $oSort = $oData['oSort'];
 
 			<div class="card-body grid">
     <table class="gridtable">
-	    <tr style="cursor: pointer">
+	    <tr>
 <?php $iI = 0;?>
 @foreach ($aColumns as $aRec)
 	<th id="gridheading_{{ $iI }}" class="gridheading" style="width: {{ $aRec[0] }}%">

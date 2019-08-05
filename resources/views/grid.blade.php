@@ -1,16 +1,31 @@
 <?php 
-if (isset($_GET['page'])){
-	$iPageNo = intval($_GET['page']);
-	if (!$iPageNo){
-		$iPageNo = 1;
+function getGET($sGet){
+	$aGet1 = base64_decode($sGet);
+	if (!isset($aGet1)){
+		return array();
 	}
-} else {
-	$iPageNo = 1;
+	$aGet1 = explode('&', $aGet1);
+	$aGet = array();
+	foreach ($aGet1 as $aRec){
+		$aRec = explode('=', $aRec);
+		$aGet[$aRec[0]] = $aRec[1];
+	}
+	return $aGet;
 }
-if (isset($_GET['search'])){
-	$sSearch = $_GET['search'];
-} else {
-	$sSearch = '';
+
+$iPageNo = 1;
+$sSearch = '';
+if (isset($_GET['grid'])){
+	$aGet = getGET($_GET['grid']);
+	if (isset($aGet['page'])){
+		$iPageNo = intval($aGet['page']);
+		if (!$iPageNo){
+			$iPageNo = 1;
+		}
+	}
+	if (isset($aGet['search'])){
+		$sSearch = $aGet['search'];
+	}
 }
 /*
 <td style="width: 20%"><button onclick="window.location.href='export';" class="grid">Export</button></td>

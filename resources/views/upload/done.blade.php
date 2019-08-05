@@ -39,9 +39,10 @@
 
 			<div class="card-body">
 				<p>You have uploaded a new {{ $oData['sAction'] }} spreadsheet.</p>
-				<p><strong>{{ $oData['iNumRecords'] }}</strong> {{ $oData['sSingle'] }}  were uploaded. Click to inspect the data.</p>
+				<p><strong>{{ $oData['iNumRecords'] }}</strong> {{ $oData['sSingle'] }}  were uploaded. Click to inspect the data or just import directly.</p>
 				<br><br>
-				<a href="../{{ $oData['sAction'] }}/new"><button class="btn-primary">View new {{ $oData['sAction'] }}</button>                   
+				<a style="margin-right: 2em;" href="../{{ $oData['sAction'] }}/new"><button class="btn-primary">View new {{ $oData['sAction'] }}</button>                   
+				<a href="../{{ $oData['sAction'] }}/new/import"><button class="btn-primary">Import new {{ $oData['sAction'] }}</button>                   
                 </div>
             </div>
         </div>

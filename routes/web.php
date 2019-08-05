@@ -9,10 +9,14 @@ Route::get('/home', 'HomeController@home')->name('home')->middleware('verified')
 // Thou shalt be logged in hereonbelow
 Route::group(['middleware' => ['auth']], function () {
 
+Route::get( 'clients/clients/{iUserID}',
+	'EditController@clients')                    ->name('clients-edit');
+Route::post('clients/clients/save',
+	'EditController@clientssave')                    ->name('clients-edit-save');
 Route::get( 'clients/clients',
 	'GridController@clients')                    ->name('clients-clients');
 Route::get( 'clients/new',
-		'GridController@newclients')             ->name('clients-new');
+	'GridController@newclients')             ->name('clients-new');
 Route::get( 'clients/upload', 
 	'ClientsController@upload')                  ->name('clients-upload');
 Route::get( 'clients/upload/new/{sAction}',  
