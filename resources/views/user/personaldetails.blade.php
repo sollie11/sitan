@@ -5,23 +5,7 @@
 		<div class="card">
 			<div class="card-header">
 				<div class="card-header-title">{{ __('Personal details') }}</div>
-				<div class="alert"><?php $bMsg = 0; ?>
-@if (session('status'))<?php $bMsg = 1; ?>
-<div class="alert-session">{{ session('status') }}</div> @endif
-@if (Session::has('success'))<?php $bMsg = 1; ?>
-<div class="alert-success">{!! Session::get('success') !!}</div> @endif
-@if (Session::has('success'))<?php $bMsg = 1; ?>
-<div class="alert-danger">{!! Session::get('failure') !!}</div> @endif
-@if ($errors->has('surname'))<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $errors->first('surname') }}</div> @endif
-@if ($errors->has('business_name'))<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $errors->first('business_name') }}</div> @endif
-
-
-@if ( $bMsg == 1)
-	<script>JSall.alerttimeout();</script>
-@endif
-				</div>
+@include('alerts')				
 			</div>
 
 

@@ -5,18 +5,7 @@
 		<div class="card">
 			<div class="card-header">
 				<div class="card-header-title">{{ __('Register') }}</div>
-				<div class="alert"><?php $bMsg = 0; ?>
-@error('name')<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $message }}</div> @enderror
-@error('email')<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $message }}</div> @enderror
-@error('password')<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $message }}</div> @enderror
-@if ( $bMsg == 1)
-	<script>window.setTimeout(function(){var eA = document.getElementsByClassName("alert")[0]; 
-	eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";}, 3000);</script>
-@endif
-				</div>
+				@include('alerts')
 			</div>
 
 

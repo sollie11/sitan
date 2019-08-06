@@ -5,24 +5,7 @@
 		<div class="card">
 			<div class="card-header">
 				<div class="card-header-title">{{ __('Change Password') }}</div>
-				<div class="alert"><?php $bMsg = 0; ?>
-@if (session('status'))<?php $bMsg = 1; ?>
-	<div class="alert-session" role="alert">{{ session('status') }}</div> @endif
-@if (Session::has('success'))<?php $bMsg = 1; ?>
-	<div class="alert-success">{!! Session::get('success') !!}</div> @endif
-@if (Session::has('failure'))<?php $bMsg = 1; ?>
-	<div class="alert-danger">{!! Session::get('failure') !!}</div> @endif
-@error('oldpassword')<?php $bMsg = 1; ?>
-	<div class="alert-danger">{{ $message }}</div> @enderror
-@error('password')<?php $bMsg = 1; ?>
-	<div class="alert-danger">{{ $message }}</div> @enderror
-@error('password_confirmation')<?php $bMsg = 1; ?>
-	<div class="alert-danger">{{ $message }}</div> @enderror
-@if ( $bMsg == 1)
-	<script>window.setTimeout(function(){var eA = document.getElementsByClassName("alert")[0]; 
-	eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";}, 3000);</script>
-@endif
-				</div>
+				@include('alerts')
 			</div>
 
 

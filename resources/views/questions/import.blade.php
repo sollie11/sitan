@@ -5,21 +5,7 @@
 		<div class="card">
 			<div class="card-header">
 				<div class="card-header-title">{{ __('Questions import') }}</div>
-				<div class="alert"><?php $bMsg = 0; ?>
-@if (session('status'))<?php $bMsg = 1; ?>
-<div class="alert-session">{{ session('status') }}</div> @endif
-@if (Session::has('success'))<?php $bMsg = 1; ?>
-<div class="alert-success">{!! Session::get('success') !!}</div> @endif
-@if (Session::has('failure'))<?php $bMsg = 1; ?>
-<div class="alert-danger">{!! Session::get('failure') !!}</div> @endif
-@if ($errors->has('send_email'))<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $errors->first('send_email') }}</div> @endif
-
-@if ( $bMsg == 1)
-	<script>window.setTimeout(function(){var eA = document.getElementsByClassName("alert")[0]; 
-	eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";}, 3000);</script>
-@endif
-				</div>
+				@include('alerts')
 			</div>
 
 

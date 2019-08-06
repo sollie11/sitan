@@ -1,15 +1,11 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                	<div class="mainheadersubmenu" id="mainheader">
-                		<div style="float: left;">Upload Error</div>
-						<div style="float: right;">{{ session()->get('sBusinessName') }}</div>
-                	</div>
+	<div class="col50">
+		<div class="card">
+			<div class="card-header">
+                	<div class="card-header-title">{{ __('Upload error') }}</div>
+                	@include('alerts')
                 </div>
                 <div class="card-body">
                     @if (session('status'))

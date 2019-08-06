@@ -12,18 +12,7 @@ $aColumns = $oData['aColumns'];
 $oSort = $oData['oSort'];
 ?>
 				@include('grid', array('iPages' => $oPaging['iPages'], 'aButton' => array('new/import', 'Import')))
-				<div class="alert"><?php $bMsg = 0; ?>
-@error('email')<?php $bMsg = 1; ?>
-<div class="alert-danger">{{ $message }}</div> @enderror
-
-
-
-
-@if ( $bMsg == 1)
-	<script>window.setTimeout(function(){var eA = document.getElementsByClassName("alert")[0]; 
-	eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";}, 3000);</script>
-@endif
-				</div>
+				@include('alerts')
 			</div>
 
 

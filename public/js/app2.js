@@ -27,6 +27,23 @@ clickmenu: function(sCat, sAction){
 	}
 },
 
+clickwindow: function(oEvent) {
+	var eTarget, eNav;
+	eTarget = oEvent.target
+  if (!eTarget.matches('.w3dbtn')) {
+  var eNav = document.getElementById("nav_" + iActiveMenu);
+    if (eNav.classList.contains('w3show')) {
+      eNav.classList.remove('w3show');
+    }
+  }
+},
+
+initall: function(){
+	JSall.init();
+	JSgrid.init();
+	window.onclick = JSall.clickwindow;
+},
+
 init: function(){
 	var aE, aF, eG, eH, sA, sB, iI, iJ;
 	aE = JSgrid.gcn("w3ddown-content");
@@ -460,20 +477,5 @@ ele: function(eParent, sClass, sType, sID){
 };
 
 
-function initall(){
-	JSall.init();
-	JSgrid.init();
-}
+window.onload = JSall.initall;
 
-window.onload = initall;
-
-window.onclick = function(oEvent) {
-	var eTarget, eNav;
-	eTarget = oEvent.target
-  if (!eTarget.matches('.w3dbtn')) {
-  var eNav = document.getElementById("nav_" + iActiveMenu);
-    if (eNav.classList.contains('w3show')) {
-      eNav.classList.remove('w3show');
-    }
-  }
-}

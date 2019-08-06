@@ -26,7 +26,11 @@
 					<li class="navbar">
 						<a class="toprightlinks" href="{{ route('login') }}">{{ __('Login') }}</a>
 					</li>
-				@else
+				</ul>
+			</div>
+		</nav>	
+@else
+				
 <!-- Logged in -->
 				<div class="navuser">
 					<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf</form>
@@ -68,7 +72,8 @@
 <?php $iI++; ?>
 @endforeach			</div>
 		</nav>
-	@endguest	<div class="newline"></div>
+		@endguest
+		<div class="newline"></div>
 		<main>
 @yield('content')
 		</main>
