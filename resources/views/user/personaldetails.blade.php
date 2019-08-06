@@ -7,7 +7,7 @@
 				<div class="card-header-title">{{ __('Personal details') }}</div>
 				<div class="alert"><?php $bMsg = 0; ?>
 @if (session('status'))<?php $bMsg = 1; ?>
-<div class="alert-success">{{ session('status') }}</div> @endif
+<div class="alert-session">{{ session('status') }}</div> @endif
 @if (Session::has('success'))<?php $bMsg = 1; ?>
 <div class="alert-success">{!! Session::get('success') !!}</div> @endif
 @if (Session::has('success'))<?php $bMsg = 1; ?>
@@ -19,8 +19,7 @@
 
 
 @if ( $bMsg == 1)
-	<script>window.setTimeout(function(){var eA = document.getElementsByClassName("alert")[0]; 
-	eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";}, 3000);</script>
+	<script>JSall.alerttimeout();</script>
 @endif
 				</div>
 			</div>

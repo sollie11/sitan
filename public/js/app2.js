@@ -1,4 +1,79 @@
 console.log('app2.js');
+var JSall = {
+iActiveMenu: 0,
+
+alerttimeout: function(){
+	window.setTimeout(function(){
+		var eA = document.getElementsByClassName("alert")[0]; 
+		eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";
+	}, 3000);
+},
+
+clickmenu: function(sCat, sAction){
+	return function(){
+		var bDone;
+		bDone = 0;
+		console.log(sCat + " / " + sAction);
+		switch (sAction){
+			case "logout":
+				event.preventDefault();
+			    document.getElementById("logout-form").submit();
+			    bDone = 1;	
+			break;
+		}
+		if (!bDone){
+			window.location.href = "/" + sCat + "/" + sAction;
+		}
+	}
+},
+
+init: function(){
+	var aE, aF, eG, eH, sA, sB, iI, iJ;
+	aE = JSgrid.gcn("w3ddown-content");
+	aE.forEach(function(eG){
+		aF = eG.children;
+		iI = 0;
+		while (aF[iI]){
+			eH = aF[iI];
+			sA = (eH.innerHTML).replace(/ /g, "").toLowerCase();
+			if (eH.attributes["menu"]){
+				sA = eH.attributes["menu"].nodeValue;
+			}
+			sB = eH.parentNode.attributes['menu'].nodeValue;
+			eH.onclick = JSall.clickmenu(sB, sA);
+			iI++;
+		}
+	});
+	aE = JSgrid.gcn("w3dbtn");
+	iI = 0;
+	aE.forEach(function(eG){
+		eG.onclick = JSall.menu('nav_' + iI);
+		iI++;
+	});
+},
+
+menu: function(sID) {
+	return function(){
+		var eDD, aL, aM, iI;
+		eDD = document.getElementById(sID);
+		iActiveMenu = parseInt(sID.split("_")[1]);
+		aM = document.getElementsByClassName("w3show");
+		if (aM[0]){
+			iI =0;
+			while (aM[iI]){
+				aL = aM[iI].classList;
+				aL.toggle("w3show");
+				iI++;
+			}
+		}
+		aL = eDD.classList;
+		aL.toggle("w3show");
+	}
+},
+
+
+};
+
 var JSgrid = {
 		
 		oGet: {},
@@ -385,5 +460,20 @@ ele: function(eParent, sClass, sType, sID){
 };
 
 
+function initall(){
+	JSall.init();
+	JSgrid.init();
+}
 
-window.onload = JSgrid.init;
+window.onload = initall;
+
+window.onclick = function(oEvent) {
+	var eTarget, eNav;
+	eTarget = oEvent.target
+  if (!eTarget.matches('.w3dbtn')) {
+  var eNav = document.getElementById("nav_" + iActiveMenu);
+    if (eNav.classList.contains('w3show')) {
+      eNav.classList.remove('w3show');
+    }
+  }
+}

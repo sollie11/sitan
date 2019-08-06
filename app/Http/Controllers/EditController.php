@@ -16,7 +16,7 @@ class EditController extends Controller
 	//==========================
 	public function emailforms($iEmailFormID){
 		$sSQL = 'SELECT * ' .
-				'FROM newclients_emailforms ' .
+				'FROM emailforms ' .
 				'WHERE id = ?';
 		$aNC = DB::select($sSQL, array($iEmailFormID));
 		if (isset($aNC[0])){
@@ -34,7 +34,7 @@ class EditController extends Controller
 				'contents' => 'required',
 		]);
 		
-		$sSQL = 'UPDATE newclients_emailforms SET description = ?, ' .
+		$sSQL = 'UPDATE emailforms SET description = ?, ' .
 				'contents = ?, updated_at = ? WHERE id = ?';
 		$sTime = date('Y-m-d H:i:s', strtotime('now'));
 		$aP = array($request->description, $request->contents, $sTime, $request->id);

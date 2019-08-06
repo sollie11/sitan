@@ -1,14 +1,13 @@
 <?php
 
 Auth::routes(['verify' => true]);
-Route::get('/', function () {
-	return view('welcome');
-});
+Route::get('/', function () {return view('welcome');});
 Route::get('/home', 'HomeController@home')->name('home')->middleware('verified');
 	
 // Thou shalt be logged in hereonbelow
 Route::group(['middleware' => ['auth']], function () {
 
+// Admin menu
 Route::get( 'admin/emailforms',
 	'GridController@emailforms')					->name('admin-emailforms');
 Route::get( 'admin/programmes',
@@ -18,6 +17,7 @@ Route::get( 'admin/uploads',
 Route::get( 'admin/users',
 	'GridController@users')							->name('admin-users');
 
+// Clients menu
 Route::get( 'clients/clients',
 	'GridController@clients')						->name('clients-clients');
 Route::get( 'clients/clients/{iUserID}',
@@ -37,6 +37,7 @@ Route::get( 'clients/uploaded',
 Route::get( 'clients/upload/new/{sAction}',
 	'ClientsController@uploadnew')					->name('clients-uploadednew');
 
+// Questions menu
 Route::get( 'questions/categories',
 	'GridController@questionscategories')			->name('questions-categories');
 Route::get( 'questions/new',
@@ -58,6 +59,7 @@ Route::get( 'questions/upload/new/{sAction}',
 Route::get( 'questions/uploaded',
 		'QuestionsController@uploaded')				->name('questions-uploaded');
 
+//User menu
 Route::get( 'user/changepassword',
 	'UserController@password')						->name('user-password');
 Route::post('user/password', 
