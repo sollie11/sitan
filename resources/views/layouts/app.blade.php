@@ -32,7 +32,7 @@
 	<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;"> @csrf </form>
 	<div class="w3navbar">
 	  <div class="w3ddown">
-		<button class="w3dbtn" onclick="menu('nav_0')">{{ Auth::user()->name }}&nbsp;&nbsp;<i class="w3caret"></i>	</button>
+		<button class="w3dbtn" style="text-align: right;" onclick="menu('nav_0')">@if (Auth::user()->name){{ Auth::user()->name }}@else {{ __('User') }} @endif &nbsp;&nbsp;<i class="w3caret"></i>	</button>
 		
 		<div class="w3ddown-content" id="nav_0">
 <?php $aM = Config::get('app.menuuser'); ?>

@@ -70,7 +70,7 @@
 
 <div class="form-group">
 	<div class="form-input">
-		<button type="submit" class="btn btn-primary">{{ __('Reset Password') }}</button>
+		<button type="submit">{{ __('Reset Password') }}</button>
 	</div>
 </div>
 					</form>

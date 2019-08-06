@@ -24,7 +24,7 @@ main{
 .alert-success{
 	color: #008800;
 }
-button{
+button, .inputbutton{
 	font-size: 1em;
 	padding: 0.4em 2.0em 0.4em 2.0em;
 	background: linear-gradient(0deg, #e4fcef 20% , #ffffff 91%);
@@ -112,6 +112,11 @@ a.colornodecor{
 .form-inputinput{
 	width: 100%;
 	height: 2em;	
+}
+.form-inputselect{
+	width: 100%;
+	height: 2em;
+	font-size: 1em;	
 }
 .form-inputcheck{
 	float: left;

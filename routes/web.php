@@ -9,33 +9,62 @@ Route::get('/home', 'HomeController@home')->name('home')->middleware('verified')
 // Thou shalt be logged in hereonbelow
 Route::group(['middleware' => ['auth']], function () {
 
-Route::get( 'clients/clients/{iUserID}',
-	'EditController@clients')                    ->name('clients-edit');
-Route::post('clients/clients/save',
-	'EditController@clientssave')                    ->name('clients-edit-save');
-Route::get( 'clients/clients',
-	'GridController@clients')                    ->name('clients-clients');
-Route::get( 'clients/new',
-	'GridController@newclients')             ->name('clients-new');
-Route::get( 'clients/upload', 
-	'ClientsController@upload')                  ->name('clients-upload');
-Route::get( 'clients/upload/new/{sAction}',  
-	'ClientsController@uploadnew')               ->name('clients-uploadednew');
-Route::get( 'clients/uploaded', 
-	'ClientsController@uploaded')                ->name('clients-uploaded');
-Route::get( 'clients/new/import',
-	'ClientsController@newclientsimport')           ->name('clients-new-import');
-Route::post('clients/new/import', 
-	'ClientsController@newclientsimportsave')       ->name('clients-new-import-save');
+Route::get( 'admin/emailforms',
+	'GridController@emailforms')					->name('admin-emailforms');
+Route::get( 'admin/programmes',
+	'GridController@programmes')					->name('admin-programmes');
+Route::get( 'admin/uploads',
+	'GridController@uploads')						->name('admin-uploads');
+Route::get( 'admin/users',
+	'GridController@users')							->name('admin-users');
 
+Route::get( 'clients/clients',
+	'GridController@clients')						->name('clients-clients');
+Route::get( 'clients/clients/{iUserID}',
+	'EditController@clients')						->name('clients-edit');
+Route::post('clients/clients/save',
+	'EditController@clientssave')					->name('clients-edit-save');
+Route::get( 'clients/new',
+	'GridController@newclients')					->name('clients-new');
+Route::get( 'clients/new/import',
+	'ClientsController@newclientsimport')			->name('clients-new-import');
+Route::post('clients/new/import',
+	'ClientsController@newclientsimportsave')		->name('clients-new-import-save');
+Route::get( 'clients/upload', 
+	'ClientsController@upload')						->name('clients-upload');
+Route::get( 'clients/uploaded', 
+	'ClientsController@uploaded')					->name('clients-uploaded');
+Route::get( 'clients/upload/new/{sAction}',
+	'ClientsController@uploadnew')					->name('clients-uploadednew');
+
+Route::get( 'questions/categories',
+	'GridController@questionscategories')			->name('questions-categories');
+Route::get( 'questions/new',
+	'GridController@newquestions')					->name('questions-new');
+Route::get( 'questions/new/import',
+	'QuestionsController@newquestionsimport')		->name('questions-new-import');
+Route::post('questions/new/import',
+	'QuestionsController@newquestionsimportsave')	->name('questions-new-import-save');
+Route::get( 'questions/options',
+	'GridController@questionsoptions')				->name('questions-options');
+Route::get( 'questions/questionnaires',
+	'GridController@questionnaires')				->name('questions-questionnaires');
+Route::get( 'questions/questions',
+	'GridController@questions')						->name('questions-questions');
+Route::get( 'questions/upload',
+		'QuestionsController@upload')				->name('questions-upload');
+Route::get( 'questions/upload/new/{sAction}',
+		'QuestionsController@uploadnew')			->name('questions-uploadednew');
+Route::get( 'questions/uploaded',
+		'QuestionsController@uploaded')				->name('questions-uploaded');
 
 Route::get( 'user/changepassword',
-	'UserController@password')                   ->name('user-password');
+	'UserController@password')						->name('user-password');
 Route::post('user/password', 
-	'UserController@passwordsave')               ->name('user-password-save');
+	'UserController@passwordsave')					->name('user-password-save');
 Route::get( 'user/personaldetails', 
-	'UserController@personaldetails')            ->name('user-personaldetails');
+	'UserController@personaldetails')				->name('user-personaldetails');
 Route::post('user/personaldetails', 
-	'UserController@personaldetailssave')        ->name('user-personaldetails-save');
+	'UserController@personaldetailssave')			->name('user-personaldetails-save');
 	
 });		

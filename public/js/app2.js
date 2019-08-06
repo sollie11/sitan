@@ -237,7 +237,7 @@ uploadformreset: function(sResponse, sColor, eBrowse, eFilename, eFilesize, eSta
 		eFilename.innerHTML = "&nbsp;";
 		eFilename.parentNode.style.background = "none";
 		eFilesize.textContent = "";
-		eStart.value = "Upload";
+		eStart.innerHTML = "Upload";
 		eStart.disabled = "disabled";
 		eProgress.value = "0";
 		eProgress.style.display = "none";
@@ -312,15 +312,17 @@ uploadform: function(sBodyClass, fCallback, sHeading, sPage, sExts){
 	eFilesize = JSupload.ele(eW, "uploadfilesize");
 	eY = JSupload.ele(eX, "", "tr");
 	eZ = JSupload.ele(eY, "", "td");
-	eStart = JSupload.ele(eZ, "btn-primary", "input");
+	eStart = JSupload.ele(eZ, "", "button");
 	eStart.type = "button";
+	eStart.style.width = "120px";
+	eStart.style.height= "27px";
 	eStart.onclick = function(){
 		if (bBusy){
 			oXHR.abort();
 			return;
 		}
 		bBusy = 1;
-		eStart.value = "Cancel";
+		eStart.innerHTML = "Cancel";
 		oFD = new FormData();
 		oFD.append("filetoupload", eBrowse.files[0]);
 		oFD.append("page", sPage);
@@ -354,8 +356,6 @@ uploadform: function(sBodyClass, fCallback, sHeading, sPage, sExts){
 		oXHR.open("POST", "../uploading.php");
 		oXHR.send(oFD);
 	};
-	eStart.style.width = "120px";
-	eStart.style.height= "27px";
 	JSupload.uploadformreset("", "#ffffff", eBrowse, eFilename, eFilesize, eStart, eProgress);
 },
 

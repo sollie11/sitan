@@ -42,7 +42,7 @@
 			<div class="card-body">
 				<p>You have imported <strong>{{ $oData['iTotal'] }}</strong> {{ $oData['sSingle'] }}.</p>
 				<p><strong>{{ $oData['iDeleted'] }}</strong> {{ $oData['sSingle'] }}  were overwritten. Click to view the {{ $oData['sSingle'] }}.</p>
-				<p>You now have <strong>{{ $oData['iNumClients'] }}</strong> {{ $oData['sSingle'] }} in the database.</p>
+				<p>You now have <strong>{{ $oData['iNumQuestions'] }}</strong> {{ $oData['sSingle'] }} in the database.</p>
 				<br><br>
 				<a href="../{{ $oData['sSingle'] }}"><button>View {{ $oData['sSingle'] }}</button>                   
                 </div>

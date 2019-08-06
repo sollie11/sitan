@@ -57,7 +57,7 @@
 <div class="form-group">
 	<label class="form-label">&nbsp;</label>
 	<div class="form-input">
-		<button type="submit" class="btn btn-primary">{{ __('Send reset link') }}</button>
+		<button type="submit">{{ __('Send reset link') }}</button>
 	</div>
 </div>
 				</form>

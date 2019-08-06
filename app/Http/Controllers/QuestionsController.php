@@ -10,64 +10,105 @@ use Illuminate\Support\Facades\Hash;
 use File;
 use Redirect;
 
-class ClientsController extends Controller{
+class QuestionsController extends Controller{
 
 public function __construct(){
 	$this->middleware('auth');
 }
 
 //==========================
-public function newclientsimport(){
+public function newquestionsimport(){
 	$oData = array(
-		'aEmailForms' => DB::select('SELECT * FROM emailforms'),
+//		'aEmailForms' => DB::select('SELECT * FROM newquestions_emailforms'),
 	);
-	return view('clients.import')->with('oData', $oData);
+	return view('questions.import')->with('oData', $oData);
 }
 
 //==========================
-public function newclientsimportsave(Request $request){
-	$aNC = DB::select('SELECT * FROM new_clients');
+public function newquestionsimportsave(Request $request){
+	$aNC = DB::select('SELECT * FROM new_questions');
 	$sTime = date('Y-m-d H:i:s', strtotime('now'));
 	$iTotal = 0;
 	$iDeleted = 0;
-	foreach($aNC as $oNC){
-		$oSQL = json_decode($oNC->insert_sql, 1);
-		$iID = DB::select('SELECT id FROM users WHERE email = ?',
-			array($oSQL['aP'][2]));
-		if (isset($iID[0])){
-			$iID = $iID[0]->id;
-			DB::update('UPDATE users SET email = ?, deleted_at = ? WHERE id = ?',
-				array('', $sTime, $iID));
-		} else {
-			$iID = 0;
+	$sCat = '';
+	$iCatIndex = 1;
+	$iQIndex = 1;
+	$iOIndex = 1;
+DB::delete('DELETE FROM questions where id > 1');
+DB::delete('DELETE FROM questions_options where id > 1');
+DB::delete('DELETE FROM questions_categories where id > 1');
+DB::delete('DELETE FROM questionnaires where id > 1');
+DB::delete('DELETE FROM question_questionnaire');
+foreach($aNC as $oNC){
+		if ($oNC->category){
+			$sCat = $oNC->category;
 		}
-		DB::insert($oSQL['sSQL'], $oSQL['aP']);
-		$iNewID = DB::getPDO()->lastInsertID();
-		$iTotal++;
-		if ($iID){
-			DB::update('UPDATE users SET email = ?, deleted_at = ? WHERE id = ?',
-				array($iNewID, $sTime, $iID));
-			$iDeleted++;
+		if ($oNC->questionnaire){
+			$sQN = $oNC->questionnaire;
+		}
+		$sDesc = $oNC->question;
+		if ($sDesc){
+			$iOIndex = 1;
+			$iQN = DB::select('SELECT id FROM questionnaires WHERE ' .
+				'description = ?', array($sQN));
+			if (!isset($iQN[0])){
+				DB::insert('INSERT INTO questionnaires (description, is_active, ' .
+					'created_at, updated_at) VALUES (?, ?, ?, ?)',
+					array($sQN, 1, $sTime, $sTime));
+				$iQN = DB::getPDO()->lastInsertID();
+			} else {
+				$iQN = $iQN[0]->id;
+			}
+			
+			$iCat = DB::select('SELECT id FROM questions_categories WHERE ' .
+				'description = ?', array($sCat));
+			if (!isset($iCat[0])){
+				DB::insert('INSERT INTO questions_categories (description, index_no, ' .
+					'created_at, updated_at) VALUES (?, ?, ?, ?)', 
+					array($sCat, $iCatIndex, $sTime, $sTime));
+				$iCat = DB::getPDO()->lastInsertID();
+				$iCatIndex++;
+			} else {
+				$iCat = $iCat[0]->id;
+			}
+			$sSQL = 'INSERT INTO questions (category_id, index_no, description, ' .
+				'tooltip, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)';
+			$aP = array($iCat, $iQIndex, $sDesc, $oNC->tooltip, $sTime, $sTime);
+			DB::insert($sSQL, $aP);
+			$iQID = DB::getPDO()->lastInsertID();
+			DB::insert('INSERT INTO question_questionnaire ' .
+				'(question_id, questionnaire_id, value, created_at, updated_at) ' .
+				'VALUES (?, ?, ?, ?, ?)',
+				array($iQID, $iQN, 1, $sTime, $sTime));
+			$iQIndex++;
+		}
+		// now insert the options
+		$sDesc = $oNC->options;
+		if ($sDesc){
+			DB::insert('INSERT INTO questions_options (question_id, index_no, ' .
+				'score, description, created_at, updated_at) ' .
+				'VALUES (?, ?, ?, ?, ?, ?)', 
+				array($iQID, $iOIndex, $oNC->score, $sDesc, $sTime, $sTime) );
+			$iOIndex++;
 		}
 	}
-	$iNumClients = DB::select('SELECT id FROM users WHERE is_client = ? AND ' .
+	$iNumQuestions = DB::select('SELECT id FROM questions WHERE ' .
 		'deleted_at IS NULL', array(1));
 	$oData = array(
 		'iTotal' => $iTotal,
 		'iDeleted' => $iDeleted,
-		'sSingle' => 'clients',
-		'sCaps' => 'Clients',
-		'iNumClients' => sizeof($iNumClients),
+		'sSingle' => 'questions',
+		'sCaps' => 'Questions',
+		'iNumQuestions' => sizeof($iNumQuestions),
 	);
-	$request->session()->flash('success', 'The clients have been imported.');
-	return view('clients.imported')->with('oData', $oData);
-//	return back();
+	$request->session()->flash('success', 'The questions have been imported.');
+	return view('questions.imported')->with('oData', $oData);
 }
 
 public function upload(){
-	$oData = array('sAction' => 'clients',
-		'sSingle' => 'clients',
-		'sCaps' => 'Clients',
+	$oData = array('sAction' => 'questions',
+		'sSingle' => 'questions',
+		'sCaps' => 'Questions',
 	);
 	return view('upload/upload')->with('oData', $oData);
 }
@@ -76,10 +117,10 @@ public function upload(){
 //==========================
 public function uploaded(){
 	$oData = array(
-		'sSingle' => 'clients',
-		'sCaps' => 'Clients',
-		'iNumRecords' => sizeof(DB::select('SELECT id FROM new_clients')),
-		'sAction' => 'clients',		
+		'sSingle' => 'questions',
+		'sCaps' => 'Questions',
+		'sAction' => 'questions',
+		'iNumRecords' => sizeof(DB::select('SELECT id FROM new_questions')),
 	);
 	return view('upload.done')->with('oData', $oData);
 }
@@ -87,79 +128,12 @@ public function uploaded(){
 //==========================
 public function uploadedinsert($sAction){
 	$sDate = date('Y-m-d H:i:s', strtotime("now"));
-	$aNewClients = DB::select('SELECT id, programme, questionnaire, ' .
-		'business_name, first_name, ' .
-		'surname, email FROM new_clients');
-	foreach ($aNewClients as $oNC){
-		$iJ = rand(100000, 500000);
-		for ($iI = 0; $iI < $iJ; $iI++){
-			$sTime = microtime(1);
-			$sTime = $sTime - intval($sTime);
-			if ($sTime < 0.1){
-				$sTime += 0.1;
-			}
-			$sTime *= 10000;
-			$sTime = substr($sTime . '1234', 0, 4);
-		}
-		$bFound = 1;
-		while ($bFound){
-			$sUsername = explode("@", $oNC->email)[0] .
-			rand(1000, 9999);
-			$sSQL = 'SELECT id FROM users WHERE username = ?';
-			$aP = array($sUsername);
-			$aID = DB::select($sSQL, $aP);
-			if (!isset($aID[0])){
-				$bFound = 0;
-			}
-		}
-		$sEmailAddress = $oNC->email;
-		$iProgramme = $oNC->programme;
-		$sDesc = $iProgramme;
-		if (filter_var($iProgramme, FILTER_VALIDATE_INT) === false){
-			$iProgramme = DB::select('SELECT id FROM programmes ' .
-				'WHERE description = ?', array($iProgramme));
-			if (isset($iProgramme[0])){
-				$iProgramme = $iProgramme[0]->id;
-			} else {
-				DB::insert('INSERT INTO programmes (description, ' .
-					'is_active, created_at, updated_at) VALUES(?, ?, ?, ?)', 
-					array($sDesc, 1, $sDate, $sDate));
-				$iProgramme = DB::getPDO()->lastInsertID();
-			}
-		}
-		$iQuestionnaire = $oNC->questionnaire;
-		$sDesc = $iQuestionnaire;
-		if (filter_var($iQuestionnaire, FILTER_VALIDATE_INT) === false){
-			$iQuestionnaire = DB::select('SELECT id FROM questionnaires ' .
-				'WHERE description = ?', array($iQuestionnaire));
-			if (isset($iQuestionnaire[0])){
-				$iQuestionnaire = $iQuestionnaire[0]->id;
-			} else {
-				DB::insert('INSERT INTO questionnaires (description, ' .
-					'is_active, created_at, updated_at) VALUES(?, ?, ?, ?)', 
-					array($sDesc, 1, $sDate, $sDate));
-				$iQuestionnaire = DB::getPDO()->lastInsertID();
-			}
-		}
-		$sPassword = strtolower(substr($oNC->business_name, 0, 2) .
-			substr($oNC->email, 0, 4) .
-			substr($oNC->surname, 0, 2) . $sTime);
-		$sPasswordHash = Hash::make($sPassword);
-		$sSQL = 'INSERT INTO users (name, surname, email, username, ' .
-			'password, programme_id, active_questionnaire_id, ' .
-			'business_name, is_client, ' .
-			'created_at, updated_at, email_verified_at) VALUES (' .
-			'?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-		$aP = array($oNC->first_name, $oNC->surname,
-			$sEmailAddress, $sUsername, $sPasswordHash,
-			$iProgramme, $iQuestionnaire, $oNC->business_name, 1,
-			$sDate, $sDate, $sDate);
-		$oSQL = array('sSQL' => $sSQL, 'aP' => $aP);		
-		$sSQL = 'UPDATE new_clients SET clear_password = ?, ' .
-			'insert_sql = ?, updated_at = ? WHERE ' .
-			'id = ?';
-		$aP = array($sPassword, json_encode($oSQL, 1), $sDate, $oNC->id);
-		DB::update($sSQL, $aP);
+	$aNewQuestions = DB::select('SELECT id, category, question, ' .
+			'options, score, ' .
+			'tooltip, extra FROM new_questions');
+	foreach ($aNewQuestions as $oNC){
+error_log(2222233);
+error_log(json_encode($oNC));
 	}
 }
 
@@ -188,7 +162,7 @@ public function uploadnew($sRequest){
 	$aSheet = new SpreadSheetUpload($oRequest, $oRules);
 	if ($aSheet->oError['iError'] == 0) {
 		$this->uploadedinsert($sAction);
-		return Redirect::route('clients-uploaded');
+		return Redirect::route('questions-uploaded');
 	} else {
 		return Redirect::route('upload/error/' . $iUploadID);
 	}

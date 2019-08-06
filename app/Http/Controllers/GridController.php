@@ -51,7 +51,7 @@ class GridController extends Controller
 	
 	//==========================
 	public function emailforms($bExport = 0){
-		$sTable = 'newclients_emailforms';
+		$sTable = 'emailforms';
 		$aColumns = array(
 			//width, desc, db, search
 			array(10, 'ID', 'id', 1),
@@ -68,7 +68,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('emailforms', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.emailforms')->with('oData', $oData);
+			return view('grids.emailforms')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -109,6 +109,7 @@ class GridController extends Controller
 		$sTable = 'new_questions';
 		$aColumns = array(
 				array(5, 'ID', 'id', 1),
+				array(15, 'Questionnaire', 'questionnaire', 1),
 				array(15, 'Category', 'category', 1),
 				array(15, 'Question', 'question', 1),
 				array(15, 'Options', 'options', 1),
@@ -124,7 +125,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('newquestions', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.newquestions')->with('oData', $oData);
+			return view('grids.newquestions')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -150,7 +151,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('programmes', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.programmes')->with('oData', $oData);
+			return view('grids.programmes')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -158,7 +159,7 @@ class GridController extends Controller
 	
 	
 	//==========================
-	public function questioncategories($bExport = 0){
+	public function questionscategories($bExport = 0){
 		$sTable ='questions_categories';
 		$aColumns = array(
 				array(10, 'ID', 'id', 1),
@@ -176,7 +177,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('questioncategories', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.questioncategories')->with('oData', $oData);
+			return view('grids.questionscategories')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -206,7 +207,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('questionsoptions', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.questionsoptions')->with('oData', $oData);
+			return view('grids.questionsoptions')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -260,7 +261,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);	
 		if (!$bExport) {
 			$oData = $this->gridpaging('questionnaires', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.questionnaires')->with('oData', $oData);
+			return view('grids.questionnaires')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -289,7 +290,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);		
 		if (!$bExport) {
 			$oData = $this->gridpaging('questions', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.questions')->with('oData', $oData);
+			return view('grids.questions')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
@@ -317,27 +318,27 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('users', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.users')->with('oData', $oData);
+			return view('grids.users')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}
 	}
 		
 	//==========================
-	public function uploadsview($bExport = 0){
+	public function uploads($bExport = 0){
 		$sTable ='uploads';
 		$aColumns = array(
-				array(6, 'ID', 'id', 1),
-				array(30, 'Data', 'data', 1),
-				array(25, 'Error', 'error', 1),
-				array(25, 'Created at', 'created_at', 1),
+				array(5, 'ID', 'id', 1),
+				array(70, 'Data', 'data', 1),
+				array(10, 'Error', 'error', 1),
+				array(15, 'Created at', 'created_at', 1),
 		);
 		$sSQL = '';
 		foreach ($aColumns as $aCol){
 			$sSQL .= $aCol[2]. ', ';
 		}
 		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable .
-		' WHERE deleted_at IS NULL AND id > 1';
+		' WHERE id > 1';
 		$aRecs = DB::select($sSQL);
 		foreach ($aRecs as $oRec){
 			$oRec->data = str_replace(',', ', ', $oRec->data);
@@ -346,7 +347,7 @@ class GridController extends Controller
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
 		if (!$bExport) {
 			$oData = $this->gridpaging('uploads', $aRecs, $aColumns, $oDir['oSort']);
-			return view('admin.grid.uploads')->with('oData', $oData);
+			return view('grids.uploads')->with('oData', $oData);
 		} else {
 			return $aRecs;
 		}

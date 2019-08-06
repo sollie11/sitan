@@ -37,7 +37,7 @@ if (isset($_GET['grid'])){
 <a href="{{ $sAdd }}/add"><button class="gridadd">Add</button></a>
 @endif
 @if (isset($aButton))
-<a href="{{ $aButton[0] }}"><button class="btn-primary grid">{{ $aButton[1] }}</button></a>
+<a href="{{ $aButton[0] }}"><button class="grid">{{ $aButton[1] }}</button></a>
 @endif
 	<table border=0 class="gridcontrolstable">
 		<tr style="font-size: 14px; text-align: center;">

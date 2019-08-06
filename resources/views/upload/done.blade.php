@@ -41,8 +41,19 @@
 				<p>You have uploaded a new {{ $oData['sAction'] }} spreadsheet.</p>
 				<p><strong>{{ $oData['iNumRecords'] }}</strong> {{ $oData['sSingle'] }}  were uploaded. Click to inspect the data or just import directly.</p>
 				<br><br>
-				<a style="margin-right: 2em;" href="../{{ $oData['sAction'] }}/new"><button class="btn-primary">View new {{ $oData['sAction'] }}</button>                   
-				<a href="../{{ $oData['sAction'] }}/new/import"><button class="btn-primary">Import new {{ $oData['sAction'] }}</button>                   
+				<a href="../{{ $oData['sAction'] }}/new"><button>View new {{ $oData['sAction'] }}</button></a>                   
+@if ($oData['sAction'] == 'clients')
+				<a href="../{{ $oData['sAction'] }}/new/import"><button>Import new {{ $oData['sAction'] }}</button></a>
+@endif
+@if ($oData['sAction'] == 'questions')
+				<button onclick="document.getElementById('nqsubmit').click();">Import new {{ $oData['sAction'] }}</button></a>
+<form action="{{ route('questions-new-import-save') }}" method="post" role="form" class="form-horizontal">
+	@csrf
+<div class="form-group" style="display: none">
+	<button id="nqsubmit" type="submit">Submit</button>
+</div>
+				</form>
+@endif
                 </div>
             </div>
         </div>

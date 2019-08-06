@@ -62,7 +62,7 @@
 <div class="form-group">
 	<label for="email_form" class="form-label">{{ __('Email form to use') }}</label>
 	<div class="form-input">
-		<select onchange ="JSnewclients.emailform()" id="email_form" class="form-inputinput" name="email_form">
+		<select onchange ="JSnewclients.emailform()" id="email_form" class="form-inputselect" name="email_form">
 		@foreach ($oData['aEmailForms'] as $oQ)
 			<option value="{{ $oQ->id }}">{{ $oQ->description }}</option>
 		@endforeach

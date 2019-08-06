@@ -78,7 +78,7 @@
 <div class="form-group">
 	<label class="form-label">&nbsp;</label>
 	<div class="form-input">
-		<button type="submit" class="btn-primary">{{ __('Register') }}</button>
+		<button type="submit">{{ __('Register') }}</button>
 	</div>
 </div>
 

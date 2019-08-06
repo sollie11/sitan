@@ -76,7 +76,7 @@
 
 <div class="form-group">
 	<div class="form-inputright">
-		<button type="submit" class="btn-primary">{{ __('Change personal details') }}</button>
+		<button type="submit">{{ __('Change personal details') }}</button>
 	</div>
 </div>
                 </form>

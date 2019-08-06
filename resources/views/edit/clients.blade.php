@@ -83,7 +83,7 @@
 <div class="form-group">
 	<label class="form-label">&nbsp;</label>
 	<div class="form-input">
-		<button type="submit" class="btn-primary">{{ __('Save') }}</button>
+		<button type="submit">{{ __('Save') }}</button>
 	</div>
 </div>
                 </form>

@@ -48,6 +48,8 @@ return [
 		),
 		'questions' => array(
 			'aFields' => array(
+				array('sDBField' => 'questionnaire',
+					'sColName' => 'Questionnaire'),
 				array('sDBField' => 'category',
 					'sColName' => 'Category'),
 				array('sDBField' => 'question',

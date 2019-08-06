@@ -76,7 +76,7 @@
 <div class="form-group">
 	<label class="form-label">&nbsp;</label>
 	<div class="form-input">
-		<button type="submit" class="btn-primary">{{ __('Login') }}</button>&nbsp;&nbsp;&nbsp;
+		<button type="submit">{{ __('Login') }}</button>&nbsp;&nbsp;&nbsp;
 		@if (Route::has('password.request'))
 		<div style="float: right;"><a class="colornodecor" href="{{ route('password.request') }}">{{ __('Forgot Your Password?') }}</a></div>
 		@endif
