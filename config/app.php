@@ -3,9 +3,9 @@
 return [
 
 	'menuuser' => [
-		array("Logout"),
-		array("Change Password"),
-		array("Personal Details"),
+		array('Logout'),
+		array('Change Password'),
+		array('Personal Details'),
 	],
 		
 	'menuadmin' => [
@@ -21,6 +21,14 @@ return [
 		array('Admin', array(
 			'Email forms', 'Programmes', 'System', 'Uploads', 'Users'
 		), '#cce5ff'),
+	],
+		
+	'menuclient' => [
+		array('Home||home'),
+		array('<<<||formprevious'),
+		array('>>>||formnext'),
+		array('Categories'),
+		array('Results'),
 	],
 	
 		

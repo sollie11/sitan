@@ -9,12 +9,132 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use File;
 use Redirect;
+use App\Traits\SharedMethods;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Chart\Chart;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
+use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
+use PhpOffice\PhpSpreadsheet\Chart\Legend;
+use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
+use PhpOffice\PhpSpreadsheet\Chart\Title;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ClientsController extends Controller{
 
+	use SharedMethods;
+	
 public function __construct(){
 	$this->middleware('auth');
 }
+
+
+
+//==========================
+public function download($iUserID){
+	$oData = $this->answersgraph($iUserID, 1);
+	$oSS = new Spreadsheet();
+	$oSheet = $oSS->getActiveSheet();
+	$aTotals = array([$oData['sBusinessName']],
+			['Category', 'Score'],
+	);
+	foreach ($oData['aCategories'] as $oRec){
+		$aTotals[] = [$oRec->graph_description, intval($oRec->total)];
+	}
+	$oSheet->fromArray($aTotals, null, 'A1', true);
+	$dataSeriesLabels = [
+			new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_STRING,
+					'Worksheet!$B$3', null, 1),
+	];
+	$xAxisTickValues = [
+			new DataSeriesValues
+			(DataSeriesValues::DATASERIES_TYPE_STRING,
+					'Worksheet!$A$3:$A$11', null, 5),
+	];
+	$dataSeriesValues = [
+			new DataSeriesValues
+			(DataSeriesValues::DATASERIES_TYPE_NUMBER,
+					'Worksheet!$B$3:$B$11', null, 5),
+			new DataSeriesValues(DataSeriesValues::DATASERIES_TYPE_NUMBER,
+					'Worksheet!$L$3:$L$12', null, 5),
+	];
+	$series = new DataSeries(
+			DataSeries::TYPE_BARCHART,
+			NULL,
+			range(0, count($dataSeriesValues) - 1),
+			$dataSeriesLabels,
+			$xAxisTickValues,
+			$dataSeriesValues
+			);
+	$plotArea = new PlotArea(null, [$series]);
+	$title = new Title('Summary of scores');
+	$xAxisLabel = new Title('Categories');
+	$yAxisLabel = new Title('Score');
+	// Create the chart
+	$chart = new Chart('Categories', $title, null, $plotArea,
+			true,
+			0, // displayBlanksAs
+			null, // xAxisLabel
+			null  // yAxisLabel
+			);
+	
+	$chart->setTopLeftPosition('D2');
+	$chart->setBottomRightPosition('G20');
+	// Add the chart to the worksheet
+	$oSheet->addChart($chart);
+	
+	
+	
+	
+	//		$oSheet->setCellValue('A1', $oData['sBusinessName']);
+	$oSheet->getStyle('A1')->applyFromArray(array(
+			'font'=>array('bold'=>true, 'size'=>16),
+	));
+	$oSheet->getStyle('A2:B2')->applyFromArray(array(
+			'font'=>array('bold'=>true, 'underline'=>true),
+	));
+	$oSheet->getStyle('A22:F22')->applyFromArray(array(
+			'font'=>array('bold'=>true, 'underline'=>true),
+	));
+	$oSheet->getStyle('L12')->applyFromArray(array(
+			'font'=>array('size'=>1),
+	));
+	
+	$oSheet->setCellValue('A22', 'Category');
+	$oSheet->setCellValue('B22', 'Question');
+	$oSheet->setCellValue('E22', 'Answer');
+	$oSheet->setCellValue('F22', 'Score');
+	$oSheet->setCellValue('L12', '100');
+	$iRow = 23;
+	foreach($oData['aAnswers'] as $oRec){
+		$oSheet->setCellValue('A' . $iRow, $oRec->category);
+		$oSheet->setCellValue('B' . $iRow, $oRec->question);
+		$oSheet->setCellValue('E' . $iRow, $oRec->optiona);
+		$oSheet->setCellValue('F' . $iRow, intval
+				($oRec->real_score * 10) / 10);
+		$iRow++;
+	}
+	$iI = 0;
+	$aW = array(27, 10, 4, 46, 60, 10);
+	foreach (range('A','F') as $oCol) {
+		$oSheet->getColumnDimension($oCol)->setWidth($aW[$iI]);
+		$iI++;
+	}
+	$sFilename = 'ClientForm_' .
+			str_replace(' ', '_', $oData['sBusinessName']) .
+			'_' . date('YmdHis', strtotime('now')). '.xlsx';
+			$oWriter = new Xlsx($oSS);
+			$oWriter->setIncludeCharts(true);
+			$sFN = getcwd() . '/';
+			$sFN1 = 'download/' . $sFilename;
+			$oWriter->save($sFN . $sFN1);
+			$iFileSize = filesize($sFN . $sFN1);
+			header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			header("Content-Disposition: attachment; filename='$sFilename'");
+			return redirect(url($sFN1));
+}
+
 
 //==========================
 public function newclientsimport(){
@@ -61,8 +181,14 @@ public function newclientsimportsave(Request $request){
 	);
 	$request->session()->flash('success', 'The clients have been imported.');
 	return view('clients.imported')->with('oData', $oData);
-//	return back();
 }
+
+
+public function results($iUserID){
+	$oData = $this->answersgraph($iUserID, 1);
+	return view('clients.results')->with('oData', $oData);
+}
+
 
 public function upload(){
 	$oData = array('sAction' => 'clients',

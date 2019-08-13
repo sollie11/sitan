@@ -1,3 +1,44 @@
+<?php
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+
+$bLoggedIn = 1;
+$bIsAdmin = 0;
+if (!Auth::check()){
+	$bLoggedIn = 0;
+}
+$oUser = Auth::user();
+if (!$oUser){
+	$bLoggedIn = 0;
+} else {
+	if (!$oUser->email_verified_at){
+		return;
+	}
+	$bIsAdmin = 0;
+	if ($oUser->is_admin){
+		$bIsAdmin = 1;
+	}
+	if ($oUser->is_client){
+		$bIsAdmin = -1;
+		$aCats = DB::select('SELECT id, index_no, description, graph_description ' .
+			'FROM questions_categories ' .
+			'WHERE id IN (SELECT category_id FROM questionnaire_category ' .
+			'WHERE questionnaire_id = ?) ORDER BY index_no',
+			array(Auth::user()->active_questionnaire_id)
+		);
+		$iCatFirst = $aCats[0]->index_no;
+		$iCatLast = $aCats[sizeof($aCats) - 1]->index_no;
+		echo '<script>var iCatFirst = ' . $iCatFirst . '; var iCatLast = ' . $iCatLast . ';</script>';
+	}
+	$sMenu = 'client';
+	if ($bIsAdmin == 1){
+		$sMenu = 'admin';
+	}
+	$bIsFirstLogin = $oUser->is_first_login;
+	$iUserID = $oUser->id;
+	$sBusinessName = $oUser->business_name;
+}
+?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -28,7 +69,6 @@
 					</li>
 				</ul>
 			</div>
-		</nav>	
 @else
 				
 <!-- Logged in -->
@@ -44,39 +84,73 @@
 				@endforeach			</div>
 						</div>
 					</div>
-				</div>
-<?php $aM = Config::get('app.menuadmin'); 
-				$iI = 1;
-?>@foreach ($aM as $aMenu)				<div class="navmain">
-					<div class="w3navbar">
-						<div class="w3ddown">
-							<button @if (isset($aMenu[3])) style="background: {{ $aMenu[2] }};" @endif class="w3dbtn" >{{ $aMenu[0] }}<i class="w3caret"></i></button>
-				<?php $sName = str_replace(' ', '', strtolower($aMenu[0]));
-				?>			<div class="w3ddown-content" id="nav_{{ $iI }}" menu="{{ $sName }}">
-				@foreach ($aMenu[1] as $aMenu1)<?php 
-				$aDest = array($aMenu1);
-				$aDest[1] = str_replace(' ', '', strtolower($aMenu1));
-				$aDest[2] = explode('||', $aDest[1]);
+				</div><?php 
+$aM = Config::get('app.menu' . $sMenu);
+if ($sMenu == 'client'){
+	$aC = array();
+	foreach ($aCats as $oRec){
+		$aC[] = $oRec->description;
+	}
+	$sM = $aM[3];
+	$aMn = array($sM, $aC);
+	$aMn[0] = $aMn[0][0];
+	$aM[3] = $aMn;
+}
+$iI = 1;
+foreach ($aM as $aMenu){
+	echo  "\n";
+	echo '<div class="navmain">' . "\n";
+	echo '	<div class="w3navbar">' . "\n";
+	echo '		<div class="w3ddown">' . "\n";
+	$aA = explode('||', $aMenu[0]);
+	if (!isset($aA[1])){
+		$aA[1] = str_replace(' ', '', strtolower($aA[0]));
+	}
+	if (isset($aMenu[1])){
+		if ($bIsAdmin == 1){
+			$sMenu2 = $aA[1];
+		} else {
+			$sMenu2 = 'form/page';
+		}
+		echo '			<button class="w3dbtn">' . $aA[0] . '<i class="w3caret"></i></button>' ."\n";
+		echo '			<div id="nav_' . $iI . '" class="w3ddown-content" ' .
+			'menu="' . $sMenu2 . '">' ."\n";
+		$iJ = 1;
+		foreach ($aMenu[1] as $aMenu1){
+			$aDest = array($aMenu1);
+			$aDest[1] = str_replace(' ', '', strtolower($aMenu1));
+			$aDest[2] = explode('||', $aDest[1]);
+			if ($bIsAdmin == 1){
 				if (isset($aDest[2][1])){
-					$sMenu = ' menu="' . $aDest[2][1] . '"';
+					$sMenu1 = ' menu="' . $aDest[2][1] . '"';
 				} else {
-					$sMenu = '';
+					$sMenu1 = '';
 				}
-				$aDest[3] = explode('||', $aDest[0])[0];
-				?>
-				<a{!! $sMenu !!}>{{ $aDest[3] }}</a>
-				@endforeach			</div>
-						</div>
-					</div>
-				</div>
-<?php $iI++; ?>
-@endforeach			</div>
+			} else {
+				$sMenu1 = ' menu="' . ($iJ) . '"';
+			}
+			$aDest[3] = explode('||', $aDest[0])[0];
+			echo '				<a' . $sMenu1 . '>' . $aDest[3] . '</a>' ."\n";
+			$iJ++;
+		}
+		echo '			</div>' ."\n";
+	} else {
+		echo '			<a id="nav_' . $iI . '" class="w3dbtn client" menu="' . $sMenu . '_' . $aA[1] . 
+			'">' . $aA[0] . '</a>' . "\n";
+	}
+	echo '		</div>' . "\n";
+	echo '	</div>' . "\n";
+	echo '</div>' . "\n";
+	$iI++;
+}
+?> 
+			</div>
 		</nav>
-		@endguest
-		<div class="newline"></div>
+		@endguest<div class="newline"></div>
 		<main>
 @yield('content')
 		</main>
 	</div>
+@if ($bIsAdmin == -1) <script>window.setTimeout(function(){JSform.init();}, 1000);</script> @endif
 </body>
 </html>

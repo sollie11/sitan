@@ -17,6 +17,7 @@
 
 
 				<div class="card-body">
+<a href="/clients/results/{{ $oData['oClient']->id }}"><button>Questionnaire</button></a>
 <div class="form-group">
 	<div style="float: left">Use this form to edit the user.</div>
 	<div class="newline"></div>

@@ -32,9 +32,11 @@ class GridController extends Controller
 		}
 		$sSQL = 'SELECT A.id, B.description AS programme, A.business_name, A.name, ' .
 			'A.surname, A.email, C.description AS questionnaire, ' .
-			'NULL AS updated_at FROM users A ' .
+			'D.updated_at FROM users A ' .
 			'INNER JOIN programmes B ON B.id=A.programme_id ' .
 			'INNER JOIN questionnaires C ON A.active_questionnaire_id = C.id ' .
+			'LEFT JOIN forms D ON A.id = D.user_id ' .
+			
 			'WHERE  A.is_client = 1 ' .
 			'AND A.deleted_at IS NULL';
 		$aRecs = DB::select($sSQL);

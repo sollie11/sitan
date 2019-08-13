@@ -39,6 +39,7 @@ DB::delete('DELETE FROM questions_options where id > 1');
 DB::delete('DELETE FROM questions_categories where id > 1');
 DB::delete('DELETE FROM questionnaires where id > 1');
 DB::delete('DELETE FROM question_questionnaire');
+DB::delete('DELETE FROM questionnaire_category');
 foreach($aNC as $oNC){
 		if ($oNC->category){
 			$sCat = $oNC->category;
@@ -70,6 +71,14 @@ foreach($aNC as $oNC){
 				$iCatIndex++;
 			} else {
 				$iCat = $iCat[0]->id;
+			}
+			$aQC = DB::select('SELECT id FROM questionnaire_category ' . 
+				'WHERE questionnaire_id = ? AND category_id = ?', 
+				array($iQN, $iCat));
+			if (!isset($aQC[0])){
+				DB::insert('INSERT INTO questionnaire_category ' .
+					'(questionnaire_id, category_id) VALUES (?, ?)',
+					array($iQN, $iCat));
 			}
 			$sSQL = 'INSERT INTO questions (category_id, index_no, description, ' .
 				'tooltip, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)';
@@ -127,6 +136,8 @@ public function uploaded(){
 
 //==========================
 public function uploadedinsert($sAction){
+	error_log('uploadedinsert..... do what?');
+	/*
 	$sDate = date('Y-m-d H:i:s', strtotime("now"));
 	$aNewQuestions = DB::select('SELECT id, category, question, ' .
 			'options, score, ' .
@@ -135,6 +146,7 @@ public function uploadedinsert($sAction){
 error_log(2222233);
 error_log(json_encode($oNC));
 	}
+	*/
 }
 
 //==========================

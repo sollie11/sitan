@@ -7,6 +7,16 @@ Route::get('/home', 'HomeController@home')->name('home')->middleware('verified')
 // Thou shalt be logged in hereonbelow
 Route::group(['middleware' => ['auth']], function () {
 
+// Client menu
+Route::get( 'form/page/{iPageID}',
+	'ClientController@formpage')					->name('client-form-page');
+Route::get( 'form/results',
+	'ClientController@formresults')					->name('client-form-results');
+Route::post('form/page/{iPageID}',
+	'ClientController@formpageoptionsajax')			->name('client-form-page-options-ajax');
+Route::get('form/submit',
+	'ClientController@submitted')					->name('client-form-submitted');
+
 // Admin menu
 Route::get( 'admin/emailforms',
 	'GridController@emailforms')					->name('admin-emailforms');
@@ -24,12 +34,16 @@ Route::get( 'clients/clients/{iUserID}',
 	'EditController@clients')						->name('clients-edit');
 Route::post('clients/clients/save',
 	'EditController@clientssave')					->name('clients-edit-save');
+Route::get( 'clients/download/{iUserID}',
+	'ClientsController@download')					->name('clients-download');
 Route::get( 'clients/new',
 	'GridController@newclients')					->name('clients-new');
 Route::get( 'clients/new/import',
 	'ClientsController@newclientsimport')			->name('clients-new-import');
 Route::post('clients/new/import',
 	'ClientsController@newclientsimportsave')		->name('clients-new-import-save');
+Route::get( 'clients/results/{iUserID}',
+	'ClientsController@results')					->name('clients-results');
 Route::get( 'clients/upload', 
 	'ClientsController@upload')						->name('clients-upload');
 Route::get( 'clients/uploaded', 

@@ -2,51 +2,153 @@ console.log('app2.js');
 var JSall = {
 iActiveMenu: 0,
 
-alerttimeout: function(){
-	window.setTimeout(function(){
-		var eA = document.getElementsByClassName("alert")[0]; 
-		eA.title = eA.children[0].innerHTML; eA.innerHTML=".&nbsp;";
-	}, 3000);
-},
-
-clickmenu: function(sCat, sAction){
-	return function(){
-		var bDone;
-		bDone = 0;
-		console.log(sCat + " / " + sAction);
-		switch (sAction){
-			case "logout":
-				event.preventDefault();
-			    document.getElementById("logout-form").submit();
-			    bDone = 1;	
-			break;
-		}
-		if (!bDone){
-			window.location.href = "/" + sCat + "/" + sAction;
+//==========================
+ajax: function(oRequest, fCallback){
+	var oXHR, sResponse, sURL, sCsrfToken, aMeta, oRec, iI, oA;
+	oXHR = new XMLHttpRequest();
+	oXHR.onreadystatechange = function(){
+		if (oXHR.readyState == XMLHttpRequest.DONE){ 
+			if (oXHR.status == 200) { 
+				sResponse = oXHR.responseText;
+				if (fCallback){
+					fCallback(oXHR.responseText);
+				}
+			} else if (oXHR.status == 400){
+				console.log('AJAX error' + oXHR.status);
+			}
 		}
 	}
+	sURL = window.location.href;
+	if (oRequest.sURL){
+		sURL += oRequest.sURL;
+	}
+	aMeta = document.getElementsByTagName('meta');
+	iI = 0;
+	sCsrfToken = "";
+	while (aMeta[iI]){
+		oRec = aMeta[iI];
+		oA = oRec.attributes
+		if ((oA.name) && (oA.name.nodeValue == 'csrf-token')){
+			sCsrfToken = oRec.getAttribute("content");
+		}
+		iI++;
+	}
+	if (!sCsrfToken[0]){
+		return;
+	}
+	oXHR.open("post", sURL);
+	oXHR.setRequestHeader("Access-Control-Allow-Origin", 
+		sURL + ":80");
+    oXHR.setRequestHeader("Access-Control-Allow-Headers", 
+    	"Access-Control-Allow-Origin, X-CSRF-TOKEN, Origin, " + 
+    	"X-Requested-With, Content-Type, " + 
+    	"Accept, Access-Control-Request-Method, Authorization");
+	oXHR.setRequestHeader("Content-type", 
+		"application/x-www-form-urlencoded; charset=UTF-8");
+	oXHR.setRequestHeader("Access-Control-Allow-Methods", 
+		"GET, POST");//, OPTIONS, PUT, DELETE");
+	oXHR.setRequestHeader("X-CSRF-TOKEN", sCsrfToken);
+	oXHR.send("a=" + btoa(JSON.stringify(oRequest)));
 },
+
 
 clickwindow: function(oEvent) {
 	var eTarget, eNav;
 	eTarget = oEvent.target
   if (!eTarget.matches('.w3dbtn')) {
-  var eNav = document.getElementById("nav_" + iActiveMenu);
+  var eNav = document.getElementById("nav_" + JSall.iActiveMenu);
     if (eNav.classList.contains('w3show')) {
       eNav.classList.remove('w3show');
     }
   }
 },
 
+
+cookiedelete: function(name) {   
+    document.cookie = name+"=; Max-Age=-99999999;";  
+},
+
+
+
+cookieget: function(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(";");
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==" ") c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+},
+
+
+
+cookiereset: function(){
+	PPJS.cookieset("sagepp_token", 0);
+	PPJS.cookieset("sagepp_places", 0);
+	PPJS.cookieset("sagepp_rates", 0);
+	PPJS.cookieset("sagepp_place", 0);
+	PPJS.cookieset("sagepp_rate", 0);
+	PPJS.cookieset("sagepp_ratevalue", 0);
+},
+
+cookieset: function(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+},
+
+//==========================
+dg: function(sName){
+	return document.getElementById(sName);
+},
+
+ele: function(eParent, sClass, sType, sID){
+	var eEle;
+	if (!sType){
+		sType = "div";
+	}
+	eEle = document.createElement(sType);
+	if (sClass){
+		eEle.className = sClass;
+	}
+	if (sID){
+		eEle.id = sID;
+	}
+	if (eParent){
+		eParent.appendChild(eEle);
+	}
+	return eEle;
+},
+
+//==========================
+gcn: function(sName){
+	var aEles, aEles1, iI;
+	aEles = [];
+	iI = 0;
+	aEles1 = document.getElementsByClassName(sName);
+	while (aEles1[iI]){
+		aEles.push(aEles1[iI]);
+		iI++;
+	}
+	return aEles;
+},
+
+
 initall: function(){
 	JSall.init();
 	JSgrid.init();
+//	JSclient.init();
 	window.onclick = JSall.clickwindow;
 },
 
 init: function(){
 	var aE, aF, eG, eH, sA, sB, iI, iJ;
-	aE = JSgrid.gcn("w3ddown-content");
+	aE = JSall.gcn("w3ddown-content");
 	aE.forEach(function(eG){
 		aF = eG.children;
 		iI = 0;
@@ -57,11 +159,11 @@ init: function(){
 				sA = eH.attributes["menu"].nodeValue;
 			}
 			sB = eH.parentNode.attributes['menu'].nodeValue;
-			eH.onclick = JSall.clickmenu(sB, sA);
+			eH.onclick = JSall.menu(sB, sA);
 			iI++;
 		}
 	});
-	aE = JSgrid.gcn("w3dbtn");
+	aE = JSall.gcn("w3dbtn");
 	iI = 0;
 	aE.forEach(function(eG){
 		eG.onclick = JSall.menu('nav_' + iI);
@@ -69,25 +171,123 @@ init: function(){
 	});
 },
 
-menu: function(sID) {
+menu: function(sCat, sAction) {
 	return function(){
-		var eDD, aL, aM, iI;
-		eDD = document.getElementById(sID);
-		iActiveMenu = parseInt(sID.split("_")[1]);
-		aM = document.getElementsByClassName("w3show");
-		if (aM[0]){
-			iI =0;
-			while (aM[iI]){
-				aL = aM[iI].classList;
-				aL.toggle("w3show");
-				iI++;
+		var eDD, aL, aM, iI, iJ, sMenu, bDone;		
+		if (sAction){
+			bDone = 0;
+			console.log(sCat + " / " + sAction);
+			switch (sAction){
+				case "logout":
+					event.preventDefault();
+				    document.getElementById("logout-form").submit();
+				    bDone = 1;	
+				break;
 			}
+			if (!bDone){
+				window.location.href = "/" + sCat + "/" + sAction;
+			}
+			return;
 		}
-		aL = eDD.classList;
-		aL.toggle("w3show");
+		sID = sCat;
+		eDD = document.getElementById(sID);
+		JSall.iActiveMenu = parseInt(sID.split("_")[1]);
+	    if (eDD.classList.contains('client')) {
+	    	sMenu = eDD.innerText;
+	    	if (eDD.attributes["menu"]){
+	    		sMenu = eDD.attributes["menu"].nodeValue;
+	    	}
+	    }
+	    if (sMenu){
+	    	iI = parseInt(JSall.cookieget("sitan_pageno"));
+	    	iJ = 0;
+	    	switch (sMenu){
+		    	case "client_formprevious":
+		    		iJ = 1;
+		    		iI--;
+		    		if (iI < iCatFirst){
+		    			iI = iCatLast;
+		    		}
+		    	break;
+		    	case "client_formnext":
+		    		iJ = 1;
+		    		iI++;
+		    		if (iI > iCatLast){
+		    			iI = iCatFirst;
+		    		}
+		    	break;
+		    	case "client_results":
+		    		window.location.href = "/form/results";
+		    	break;
+		    	case "client_home":
+		    		window.location.href = "/home";
+		    	break;
+	    	}
+	    	if (iJ){
+		    	JSall.cookieset("sitan_pageno", iI);
+		    	window.location.href = "/form/page/" + iI;	    		
+	    	}
+	    } else {
+			aM = document.getElementsByClassName("w3show");
+			if (aM[0]){
+				iI =0;
+				while (aM[iI]){
+					aL = aM[iI].classList;
+					aL.toggle("w3show");
+					iI++;
+				}
+			}
+			aL = eDD.classList;
+			aL.toggle("w3show");
+	    }
 	}
 },
 
+
+};
+
+var JSclient = {
+
+init: function(){
+},
+
+};
+
+
+var JSform = {
+
+iPageNo: 1,//iCatFirst,
+
+init: function(){
+	var iPageNo;
+	iPageNo = JSall.cookieget("sitan_pageno");
+	if (!iPageNo){
+		iPageNo = JSform.iPageNo;
+		JSall.cookieset("sitan_pageno", iPageNo);
+	}
+	console.log("JSform: page " + JSform.iPageNo);
+},
+
+formoptionA: function(oData){
+	console.log(oData);
+},
+
+formoption: function(oEvent){
+	var iCat, iQuestion, iOption, aID, eX;
+	eX = event.target;
+	aID = (eX.id).split("_");
+	iOpt  = parseInt(eX.children[eX.selectedIndex].value);
+	iCat = parseInt(aID[1]);
+	iQuestion = parseInt(aID[2]);
+	JSall.ajax({
+		sAction: "formoption",
+		iCat: iCat,
+		iQuestion: iQuestion,
+		iOption: iOpt,
+	}, JSform.formoptionA);
+	console.log("formoption"+iOpt)
+
+},
 
 };
 
@@ -99,7 +299,7 @@ var JSgrid = {
 //==========================
 action: function(sAction, sURL){
 	var iAnswer, iID;
-	iID = JSgrid.dg("id").value;
+	iID = JSall.dg("id").value;
 	sURL = "/" + sURL + "/" + iID + "/" +sAction;
 	console.log(sURL)
 	window.location.href = sURL;
@@ -110,7 +310,7 @@ editdelete: function(sName, sURL){
 	var iAnswer, iID;
 	iAnswer = confirm("Click OK to delete this " + sName);
 	if (iAnswer == true){
-		iID = JSgrid.dg("id").value;
+		iID = JSall.dg("id").value;
 		window.location.href = "delete/" + iID;
 	} else {
 	}
@@ -119,7 +319,7 @@ editdelete: function(sName, sURL){
 //==========================
 init: function(){
 	var aEles, iI, aGet, aParam, aID, that;
-	aEles = JSgrid.gcn("gridtable");
+	aEles = JSall.gcn("gridtable");
 	if (aEles[0]){
 		aEles[0].onclick = JSgrid.clickrow;
 		aGet = window.location.href.split("grid=");
@@ -197,24 +397,6 @@ clickrow: function(oEvent){
 	//	}		
 	break;
 	}
-},
-
-//==========================
-gcn: function(sName){
-	var aEles, aEles1, iI;
-	aEles = [];
-	iI = 0;
-	aEles1 = document.getElementsByClassName(sName);
-	while (aEles1[iI]){
-		aEles.push(aEles1[iI]);
-		iI++;
-	}
-	return aEles;
-},
-
-//==========================
-dg: function(sName){
-	return document.getElementById(sName);
 },
 
 //==========================
@@ -340,21 +522,21 @@ uploadform: function(sBodyClass, fCallback, sHeading, sPage, sExts){
 	var eV, eW, eX, eY, eZ, eBody, eForm, eBrowse, eStart, eProgress, eFilesize,
 		bBusy, oFD, oXHR, iPerc;
 	eBody = document.getElementsByClassName(sBodyClass)[0];
-	eForm = JSupload.ele(eBody, "", "form");
+	eForm = JSall.ele(eBody, "", "form");
 	eForm.enctype ="multipart/form-data";
 	eForm.method="post";
 	eForm.action="../uploading.php";
-	eX = JSupload.ele(eBody, "upload", "table");
-	eY = JSupload.ele(eX, "", "tr");
-	eZ = JSupload.ele(eY, "", "td");
-	eW = JSupload.ele(eZ);
+	eX = JSall.ele(eBody, "upload", "table");
+	eY = JSall.ele(eX, "", "tr");
+	eZ = JSall.ele(eY, "", "td");
+	eW = JSall.ele(eZ);
 	eZ.innerHTML = sHeading;
-	eY = JSupload.ele(eX, "", "tr");
-	eZ = JSupload.ele(eY, "", "td");
-	eV = JSupload.ele(eZ, "upload-btn-wrapper");
-	eW = JSupload.ele(eV, "upload-btn", "button");
+	eY = JSall.ele(eX, "", "tr");
+	eZ = JSall.ele(eY, "", "td");
+	eV = JSall.ele(eZ, "upload-btn-wrapper");
+	eW = JSall.ele(eV, "upload-btn", "button");
 	eW.innerHTML = "Select file";
-	eBrowse = JSupload.ele(eV, "", "input");
+	eBrowse = JSall.ele(eV, "", "input");
 	eBrowse.type = "file";
 	eBrowse.name = "filetoupload";
 	eBrowse.onchange = function(){
@@ -390,21 +572,21 @@ uploadform: function(sBodyClass, fCallback, sHeading, sPage, sExts){
 			eFilesize.textContent = iFileSize;
 		}
 	};
-	eY = JSupload.ele(eX, "", "tr");
-	eZ = JSupload.ele(eY, "", "td");
-	eFilename = JSupload.ele(eZ);
-	eY = JSupload.ele(eX, "", "tr");
-	eZ = JSupload.ele(eY, "", "td");
+	eY = JSall.ele(eX, "", "tr");
+	eZ = JSall.ele(eY, "", "td");
+	eFilename = JSall.ele(eZ);
+	eY = JSall.ele(eX, "", "tr");
+	eZ = JSall.ele(eY, "", "td");
 	eZ.style.height = "34px";
-	eW = JSupload.ele(eZ);
+	eW = JSall.ele(eZ);
 	eW.style.width = "100%";
 	eW.style.height = "100%";
-	eProgress = JSupload.ele(eW, "upload", "progress");
+	eProgress = JSall.ele(eW, "upload", "progress");
 	eProgress.max = "100";
-	eFilesize = JSupload.ele(eW, "uploadfilesize");
-	eY = JSupload.ele(eX, "", "tr");
-	eZ = JSupload.ele(eY, "", "td");
-	eStart = JSupload.ele(eZ, "", "button");
+	eFilesize = JSall.ele(eW, "uploadfilesize");
+	eY = JSall.ele(eX, "", "tr");
+	eZ = JSall.ele(eY, "", "td");
+	eStart = JSall.ele(eZ, "", "button");
 	eStart.type = "button";
 	eStart.style.width = "120px";
 	eStart.style.height= "27px";
@@ -450,29 +632,6 @@ uploadform: function(sBodyClass, fCallback, sHeading, sPage, sExts){
 	};
 	JSupload.uploadformreset("", "#ffffff", eBrowse, eFilename, eFilesize, eStart, eProgress);
 },
-
-dg: function(sName){
-	return document.getElementById(sName);
-},
-
-ele: function(eParent, sClass, sType, sID){
-	var eEle;
-	if (!sType){
-		sType = "div";
-	}
-	eEle = document.createElement(sType);
-	if (sClass){
-		eEle.className = sClass;
-	}
-	if (sID){
-		eEle.id = sID;
-	}
-	if (eParent){
-		eParent.appendChild(eEle);
-	}
-	return eEle;
-},
-
 
 };
 

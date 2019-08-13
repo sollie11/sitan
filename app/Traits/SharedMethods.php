@@ -219,6 +219,7 @@ private function getGET($sGet){
 			if ($iFound){
 				//$oData['aAnswers'][$iI]->real_score = 
 				$iScore = $aCategories[($iFound - 1)]->num_questions;
+				$iNQ = $iScore;
 				$iScore = 100 / $iScore;
 				switch ($oRec->score){
 					case -5:
@@ -235,11 +236,12 @@ private function getGET($sGet){
 				if ($aCategories[($iFound - 1)]->total > 100){
 					$aCategories[($iFound - 1)]->total = 100;
 				}
-				$oData['aAnswers'][$iJ]->real_score = $iScore;
+				$oData['aAnswers'][$iJ]->real_score = $iScore * $iNQ;
 			}
 			$iJ++;
 		}
 		$oData['aCategories'] = $aCategories;
+		$oData['iUserID'] = $iUserID;
 		return $oData;
 	}
 }
