@@ -93,7 +93,8 @@ class GridController extends Controller
 		foreach ($aColumns as $aCol){
 			$sSQL .= $aCol[2]. ', ';
 		}
-		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable ;
+		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable .
+			' WHERE deleted_at IS NULL';
 		$aRecs = DB::select($sSQL);
 		$oDir = $this->gridsetup($aColumns);
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);		
@@ -121,7 +122,8 @@ class GridController extends Controller
 		foreach ($aColumns as $aCol){
 			$sSQL .= $aCol[2]. ', ';
 		}
-		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable ;
+		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable .
+			' WHERE deleted_at IS NULL';
 		$aRecs = DB::select($sSQL);
 		$oDir = $this->gridsetup($aColumns);
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);
@@ -251,13 +253,14 @@ class GridController extends Controller
 		$aColumns = array(
 				array(10, 'ID', 'id', 1),
 				array(60, 'Description', 'description', 1),
+				array(10, 'Active', 'is_active', 1),
 		);
 		$sSQL = '';
 		foreach ($aColumns as $aCol){
 			$sSQL .= $aCol[2]. ', ';
 		}
 		$sSQL = 'SELECT ' . substr($sSQL, 0, -2) . ' FROM ' . $sTable .
-		' WHERE deleted_at IS NULL AND id > 1';
+		' WHERE  deleted_at IS NULL AND id > 1';
 		$aRecs = DB::select($sSQL);
 		$oDir = $this->gridsetup($aColumns);
 		$aRecs = $this->gridsearchsort($aRecs, $oDir['iDir'], $oDir['sSort'], $aColumns);	

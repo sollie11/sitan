@@ -11,7 +11,7 @@ $oPaging = $oData['oPaging'];
 $aColumns = $oData['aColumns'];
 $oSort = $oData['oSort'];
 ?>
-				@include('grid', array('iPages' => $oPaging['iPages'], 'aButton' => array('new/import', 'Import')))
+				@include('grid', array('iPages' => $oPaging['iPages'], 'aButton' => array('/clients/new/add', 'Add')))
 				@include('alerts')
 			</div>
 
@@ -62,7 +62,7 @@ if (isset($aData[$iRowNo])) {
 }
 ?>
 @if ($oRec)
-	<tr id="client_{{ $oRec->id }}" class="trgrid"<?php 
+	<tr id="newcl_{{ $oRec->id }}" class="trgrid"<?php 
 	if (!($iRowColor % 2)){
 		echo 'style="background: #e4fcef;"';
 	}

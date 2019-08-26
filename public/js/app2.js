@@ -4,7 +4,7 @@ iActiveMenu: 0,
 
 //==========================
 ajax: function(oRequest, fCallback){
-	var oXHR, sResponse, sURL, sCsrfToken, aMeta, oRec, iI, oA;
+	var oXHR, sResponse, sURL, sCsrfToken;
 	oXHR = new XMLHttpRequest();
 	oXHR.onreadystatechange = function(){
 		if (oXHR.readyState == XMLHttpRequest.DONE){ 
@@ -22,18 +22,8 @@ ajax: function(oRequest, fCallback){
 	if (oRequest.sURL){
 		sURL += oRequest.sURL;
 	}
-	aMeta = document.getElementsByTagName('meta');
-	iI = 0;
-	sCsrfToken = "";
-	while (aMeta[iI]){
-		oRec = aMeta[iI];
-		oA = oRec.attributes
-		if ((oA.name) && (oA.name.nodeValue == 'csrf-token')){
-			sCsrfToken = oRec.getAttribute("content");
-		}
-		iI++;
-	}
-	if (!sCsrfToken[0]){
+	sCsrfToken = JSall.csrf();
+	if (!sCsrfToken){
 		return;
 	}
 	oXHR.open("post", sURL);
@@ -50,7 +40,6 @@ ajax: function(oRequest, fCallback){
 	oXHR.setRequestHeader("X-CSRF-TOKEN", sCsrfToken);
 	oXHR.send("a=" + btoa(JSON.stringify(oRequest)));
 },
-
 
 clickwindow: function(oEvent) {
 	var eTarget, eNav;
@@ -101,6 +90,54 @@ cookieset: function(name,value,days) {
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
 },
+
+
+csrf: function(){
+	var aMeta, sCsrfToken, iI, oRec, oA;
+	aMeta = document.getElementsByTagName('meta');
+	iI = 0;
+	sCsrfToken = "";
+	while (aMeta[iI]){
+		oRec = aMeta[iI];
+		oA = oRec.attributes
+		if ((oA.name) && (oA.name.nodeValue == 'csrf-token')){
+			sCsrfToken = oRec.getAttribute("content");
+		}
+		iI++;
+	}
+	return sCsrfToken;
+},
+
+//==========================
+deleterecord: function(sAction, sURL, iID){
+	var iAnswer, eX, eY;
+	iAnswer = confirm("Click OK to delete this " + sAction);
+	if (iAnswer) {
+		eX = JSall.dg("formdelete");
+		if (!eX){
+			return;
+		}
+		eX = JSall.ele(eX,"","form");
+		eX.action= "/" + sURL + "/delete/save";
+		eX.method = "post";
+		eY = JSall.ele(eX, "", "input");
+		eY.type = "hidden";
+		eY.id = "id";
+		eY.name = "id";
+		eY.value = iID;
+		eY = JSall.ele(eX, "", "input");
+		eY.type = "hidden";
+		eY.name = "_token"
+		eY.value = JSall.csrf();
+		
+		eY = JSall.ele(eX,"","input");
+		eY.type = "submit";
+		eY.click()
+		
+//		window.location.href = "/" + sURL + "/delete/" + iID;
+	}
+},
+
 
 //==========================
 dg: function(sName){
@@ -181,6 +218,7 @@ menu: function(sCat, sAction) {
 				case "logout":
 					event.preventDefault();
 				    document.getElementById("logout-form").submit();
+				    window.location.href = "http://p.php82/logout";
 				    bDone = 1;	
 				break;
 			}
@@ -375,8 +413,8 @@ clickrow: function(oEvent){
 	case "qcat":
 		window.location.href = "questioncategories/" + iID;
 	break;
-	case "ques":
-		window.location.href = "questionnaires/" + iID;
+	case "quen":
+		window.location.href = "/questions/questionnaires/" + iID;
 	break;
 	case "quess":
 		window.location.href = "questions/" + iID;
@@ -391,10 +429,13 @@ clickrow: function(oEvent){
 		window.location.href = "emailforms/" + iID;
 	break;
 	case "client":
-/*		sDate = eEle.childNodes[5].textContent;
-		if (sDate){ */
 			window.location.href = "clients/" + iID;
-	//	}		
+	break;
+	case "newcl":
+		window.location.href = "newclients/" + iID;
+	break;
+	case "newqs":
+		window.location.href = "/questions/new/" + iID;
 	break;
 	}
 },

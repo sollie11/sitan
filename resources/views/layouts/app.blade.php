@@ -53,7 +53,7 @@ if (!$oUser){
 	<div id="app">
 		<nav class="navbar">
 			<div class="container">
-				<a class="navbar-brand" href="{{ url('/home') }}">
+				<a class="navbar-brand" href="{{ env('GATEWAY_URL') }}">
 					<div class="header-brand"><img src="/{{ env('APP_LOGOSMALL') }}" /></div>
 					<div class="header-brand">{!! implode('<br>', explode(' ', env('APP_NAME'))) !!}</div>
 				</a>

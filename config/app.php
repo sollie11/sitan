@@ -10,7 +10,7 @@ return [
 		
 	'menuadmin' => [
 		array('Clients', array(
-			'Clients', 'Email', 'New clients||new', 
+			'Clients', 'New clients||new', 
 			'New clients import||new/import', 'Upload'
 		), '#ccffff'),
 		array('Questions', array(

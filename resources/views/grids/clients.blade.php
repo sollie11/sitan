@@ -11,7 +11,7 @@ $oPaging = $oData['oPaging'];
 $aColumns = $oData['aColumns'];
 $oSort = $oData['oSort'];
 ?>
-				@include('grid', array('iPages' => $oPaging['iPages'], ))
+				@include('grid', array('iPages' => $oPaging['iPages'], 'aButton' => array('/clients/clients/add', 'Add')))
 				@include('alerts')
 			</div>
 

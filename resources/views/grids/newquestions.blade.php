@@ -62,7 +62,7 @@ if (isset($aData[$iRowNo])) {
 }
 ?>
 @if ($oRec)
-	<tr id="client_{{ $oRec->id }}" class="trgrid"<?php 
+	<tr id="newqs_{{ $oRec->id }}" class="trgrid"<?php 
 	if (!($iRowColor % 2)){
 		echo 'style="background: #e4fcef;"';
 	}

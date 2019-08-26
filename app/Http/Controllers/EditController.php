@@ -10,8 +10,62 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use function GuzzleHttp\json_encode;
 
-class EditController extends Controller
-{
+class EditController extends Controller{
+	
+//==========================
+public function clients($iUserID){
+	$sSQL = 'SELECT A.id, A.name, A.surname, A.business_name, A.email, ' .
+			'A.programme_id, A.active_questionnaire_id, ' .
+			'B.updated_at AS form_submitted_at ' .
+			'FROM users A ' .
+			'LEFT JOIN forms B ON A.id = B.user_id ' .
+			'WHERE A.id = ?';
+	$aNC = DB::select($sSQL, array($iUserID));
+	if (isset($aNC[0])){
+		$oData = array(
+				'oClient' => $aNC[0],
+				'aProgrammes' => DB::select('SELECT id, description FROM programmes ' .
+						'WHERE is_active = 1 AND deleted_at IS NULL'),
+				'aQuestionnaires' => DB::select('SELECT id, description FROM questionnaires ' .
+						'WHERE is_active = 1 AND deleted_at IS NULL'),
+				
+		);
+		return view('edit.clients')->with('oData', $oData);
+	} else {
+		return back();
+	}
+}
+
+
+//==========================
+public function clientssave(Request $request){
+	$this->validate($request, [
+			'email' => 'email',
+			'name' =>'required',
+			'surname' =>'required',
+	]);
+	
+	$sSQL = 'UPDATE users SET email = ?, name = ?, ' .
+		'surname = ?, programme_id = ?, active_questionnaire_id = ?, ' .
+		'updated_at = ? WHERE id = ?';
+	$sTime = date('Y-m-d H:i:s', strtotime('now'));
+	/*		$iIsAdmin = $request->is_admin;
+	 if ($iIsAdmin){
+	 $iIsAdmin = 1;
+	 } else {
+	 $iIsAdmin = 0;
+	 }
+	 */
+	$aP = array($request->email, $request->name, $request->surname,
+			$request->programme, $request->questionnaire, $sTime, $request->id);
+	DB::update($sSQL, $aP);
+	$request->session()->flash('success', 'The user has been edited.');
+	
+	return back();
+}
+
+
+	
 	
 	//==========================
 	public function emailforms($iEmailFormID){
@@ -45,6 +99,124 @@ class EditController extends Controller
 	}
 	
 	//==========================
+	public function newclients($iNewClientID){
+		$sSQL = 'SELECT id, programme, questionnaire, business_name, ' .
+				'first_name, surname, email ' .
+				'FROM new_clients ' .
+				'WHERE id = ?';
+		$aNC = DB::select($sSQL, array($iNewClientID));
+		if (isset($aNC[0])){
+			$oData = array(
+					'oNewClient' => $aNC[0],
+					'aProgrammes' => DB::select('SELECT id, description FROM programmes ' .
+							'WHERE is_active = 1 AND deleted_at IS NULL'),
+					'aQuestionnaires' => DB::select('SELECT id, description FROM questionnaires ' .
+							'WHERE is_active = 1 AND deleted_at IS NULL'),
+					
+			);
+			return view('edit.newclients')->with('oData', $oData);
+		} else {
+			return back();
+		}
+	}
+
+//==========================
+public function newclientssave(Request $request){
+	$this->validate($request, [
+			'email' => 'email',
+	]);
+	$sPr = DB::select('SELECT description FROM programmes WHERE id = ?',
+			array($request->programme));
+	if (isset($sPr[0])){
+		$sPr = $sPr[0]->description;
+	} else {
+		$sPr = '';
+	}
+	$sQn = DB::select('SELECT description FROM questionnaires WHERE id = ?',
+			array($request->questionnaire));
+	if (isset($sQn[0])){
+		$sQn = $sQn[0]->description;
+	} else {
+		$sQn = '';
+	}
+	$sSQL = 'UPDATE new_clients SET email = ?, first_name = ?, ' .
+			'surname = ?, programme = ?, questionnaire = ?, ' .
+			'updated_at = ? WHERE id = ?';
+	$sTime = date('Y-m-d H:i:s', strtotime('now'));
+	/*		$iIsAdmin = $request->is_admin;
+	 if ($iIsAdmin){
+	 $iIsAdmin = 1;
+	 } else {
+	 $iIsAdmin = 0;
+	 }
+	 */
+	$aP = array($request->email, $request->first_name, $request->surname,
+			$sPr, $sQn, $sTime, $request->id);
+	DB::update($sSQL, $aP);
+	$request->session()->flash('success', 'The new client has been edited.');
+	
+	return back();
+}
+
+
+
+//==========================
+public function newquestionssave(Request $request){
+/*	$this->validate($request, [
+			'email' => 'email',
+	]);
+	*/
+	
+	/*
+	$sPr = DB::select('SELECT description FROM programmes WHERE id = ?',
+			array($request->programme));
+	if (isset($sPr[0])){
+		$sPr = $sPr[0]->description;
+	} else {
+		$sPr = '';
+	}
+	*/
+	$sQn = DB::select('SELECT description FROM questionnaires WHERE id = ?',
+			array($request->questionnaire));
+	if (isset($sQn[0])){
+		$sQn = $sQn[0]->description;
+	} else {
+		$sQn = '';
+	}
+	$sSQL = 'UPDATE new_questions SET ' .
+			'questionnaire = ?, ' .
+			'updated_at = ? WHERE id = ?';
+	$sTime = date('Y-m-d H:i:s', strtotime('now'));
+	$aP = array($sQn, $sTime, $request->id);
+	DB::update($sSQL, $aP);
+	$request->session()->flash('success', 'The new question has been edited.');
+	
+	return back();
+}
+
+
+
+//==========================
+public function newquestions($iNewQuestionID){
+	$sSQL = 'SELECT * ' .
+			'FROM new_questions ' .
+			'WHERE id = ?';
+	$aNC = DB::select($sSQL, array($iNewQuestionID));
+	if (isset($aNC[0])){
+		$oData = array(
+			'oRec' => $aNC[0],
+			'aProgrammes' => DB::select('SELECT id, description FROM programmes ' .
+				'WHERE is_active = 1 AND deleted_at IS NULL'),
+			'aQuestionnaires' => DB::select('SELECT id, description FROM questionnaires ' .
+				'WHERE is_active = 1 AND deleted_at IS NULL'),
+		);
+		return view('edit.newquestions')->with('oData', $oData);
+	} else {
+		return back();
+	}
+}
+
+//==========================
 	public function programmes($iProgrammeID){
 		$sSQL = 'SELECT * ' .
 				'FROM programmes ' .
@@ -116,10 +288,10 @@ class EditController extends Controller
 	//==========================
 	public function questionnaires($iQuestionnaireID){
 		$oData = array(
-				'oQ' => DB::select('SELECT * FROM questionnaires WHERE id = ?',
-						array($iQuestionnaireID))
+				'oRec' => DB::select('SELECT * FROM questionnaires WHERE id = ?',
+						array($iQuestionnaireID))[0]
 		);
-		return view('admin.edit.questionnairesedit')->with('oData', $oData);
+		return view('edit.questionnaires')->with('oData', $oData);
 	}
 	
 	//==========================
@@ -219,57 +391,6 @@ class EditController extends Controller
 				$request->index_no, $sTime, $request->id);
 		DB::update($sSQL, $aP);
 		$request->session()->flash('success', 'The option has been edited.');
-		
-		return back();
-	}
-	
-	
-	//==========================
-	public function clients($iUserID){
-		$sSQL = 'SELECT * ' .
-				'FROM users ' .
-				'WHERE id = ?';
-		$aNC = DB::select($sSQL, array($iUserID));
-		if (isset($aNC[0])){
-			$oData = array(
-				'oClient' => $aNC[0],
-				'aProgrammes' => DB::select('SELECT * FROM programmes ' .
-					'WHERE is_active = 1 AND deleted_at IS NULL'),
-					'aProgrammes' => DB::select('SELECT * FROM programmes ' .
-						'WHERE is_active = 1 AND deleted_at IS NULL'),
-					'aQuestionnaires' => DB::select('SELECT * FROM questionnaires ' .
-						'WHERE is_active = 1 AND deleted_at IS NULL'),
-					
-				);
-			return view('edit.clients')->with('oData', $oData);
-		} else {
-			return back();
-		}
-	}
-	
-	
-	//==========================
-	public function clientssave(Request $request){
-		$this->validate($request, [
-				'email' => 'email',
-				'name' =>'required',
-				'surname' =>'required',
-		]);
-		
-		$sSQL = 'UPDATE users SET email = ?, name = ?, ' .
-			'surname = ?, updated_at = ? WHERE id = ?';
-		$sTime = date('Y-m-d H:i:s', strtotime('now'));
-/*		$iIsAdmin = $request->is_admin;
-		if ($iIsAdmin){
-			$iIsAdmin = 1;
-		} else {
-			$iIsAdmin = 0;
-		}
-	*/	
-		$aP = array($request->email, $request->name, $request->surname,
-			$sTime, $request->id);
-		DB::update($sSQL, $aP);
-		$request->session()->flash('success', 'The user has been edited.');
 		
 		return back();
 	}

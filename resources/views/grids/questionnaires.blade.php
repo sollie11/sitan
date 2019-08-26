@@ -4,14 +4,14 @@
 	<div class="col100">
 		<div class="card100">
 			<div class="card-header">
-				<div class="card-header-title">{{ __('Questions') }}</div>
+				<div class="card-header-title">{{ __('Questionnaires') }}</div>
 <?php 
 $aData = $oData['aData'];
 $oPaging = $oData['oPaging'];
 $aColumns = $oData['aColumns'];
 $oSort = $oData['oSort'];
 ?>
-				@include('grid', array('iPages' => $oPaging['iPages'], ))
+				@include('grid', array('iPages' => $oPaging['iPages'], 'aButton' => array('/questions/questionnaires/add', 'Add')))
 				@include('alerts')
 			</div>
 
@@ -62,13 +62,13 @@ if (isset($aData[$iRowNo])) {
 }
 ?>
 @if ($oRec)
-	<tr id="client_{{ $oRec->id }}" class="trgrid"<?php 
+	<tr id="quen_{{ $oRec->id }}" class="trgrid"<?php 
 	if (!($iRowColor % 2)){
 		echo 'style="background: #e4fcef;"';
 	}
 	$iRowColor++;
 	?>>
-	<td>{{ $oRec->id }}</td><td>{{ $oRec->description }}</td>
+	<td>{{ $oRec->id }}</td><td>{{ $oRec->description }}</td><td>{{ $oRec->is_active }}</td>
 	</tr>
 @endif
 @endfor

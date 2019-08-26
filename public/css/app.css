@@ -32,16 +32,13 @@ button, .inputbutton{
 	border: 1px solid #cccccc;
 	border-bottom: 2px solid #cccccc;
 	border-radius: 4px;
-	margin-right: 1em;
+	margin: 1em 1em 1em 0;
 }
 button:hover{
 	background: #ffffff;
 	color: #000000;
 	border: 1px solid #cccccc;
 	border-bottom: 2px solid #cccccc;
-}
-button:active{
-	margin-top: 1px;
 }
 .buttonsubmit{
 	margin-left: -1.1em;
